@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/blog/img/favicon.png">
+  <link rel="icon" type="image/png" href="/blog/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>java8新特性之Stream - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/blog/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/blog/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/blog/atom.xml" title="Hexo" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/blog/">&nbsp;<strong>扬帆！起航！！</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/blog/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-05-31 12:07">
+      2020年5月31日 中午
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      42
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Stream API与InputStream和OutputStream是完全不同的概念，<strong>Stream API是对Java中集合操作的增强，可以利用它进行各种过滤、排序、分组、聚合等操作</strong>。Stream API配合Lambda表达式可以加大的提高代码可读性和编码效率，Stream API也支持并行操作。</p>
+<h3 id="流不是集合，它不关心数据的存放，只关注如何处理数据"><a href="#流不是集合，它不关心数据的存放，只关注如何处理数据" class="headerlink" title="流不是集合，它不关心数据的存放，只关注如何处理数据"></a>流不是集合，它不关心数据的存放，只关注如何处理数据</h3><p>Stream API主要用于处理集合操作，不过它的处理方式与传统的方式不同，称为“数据流处理”。流（Stream）类似于关系数据库的查询操作，是一种声明式操作。比如要从数据库中获取所有年龄大于20岁的用户的名称，并按照用户的创建时间进行排序，用一条SQL语句就可以搞定，不过使用Java程序实现就会显得有些繁琐，这时候可以使用流：</p>
+<pre><code class="hljs lasso"><span class="hljs-built_in">List</span>&lt;<span class="hljs-built_in">String</span>&gt; userNames = users.stream()
+    .filter(user -&gt; user.getAge() &gt; <span class="hljs-number">20</span>)
+    .sorted(comparing(User<span class="hljs-type">::getCreationDate</span>))
+    .<span class="hljs-built_in">map</span>(User<span class="hljs-type">::getUserName</span>)
+    .collect(toList());</code></pre>
+
+<p>在Java中，集合是一种数据结构，或者说是一种容器，用于存放数据，流不是容器，它不关心数据的存放，只关注如何处理。可以把流当做是Java中的Iterator，不过它比Iterator强大多了。</p>
+<h3 id="流使用内部迭代方式处理数据"><a href="#流使用内部迭代方式处理数据" class="headerlink" title="流使用内部迭代方式处理数据"></a>流使用内部迭代方式处理数据</h3><p>流与集合另一个区别在于他们的遍历方式，遍历集合通常使用for-each方式，这种方式称为外部迭代，而流使用内部迭代方式，也就是说它帮你把迭代的工作做了，你只需要给出一个函数来告诉它接下来要干什么：</p>
+<pre><code class="hljs reasonml"><span class="hljs-comment">// 外部迭代</span>
+List&lt;String&gt; <span class="hljs-built_in">list</span> = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Arrays</span>.</span></span><span class="hljs-keyword">as</span><span class="hljs-constructor">List(<span class="hljs-string">"A"</span>, <span class="hljs-string">"B"</span>, <span class="hljs-string">"C"</span>, <span class="hljs-string">"D"</span>)</span>;
+for (String str : <span class="hljs-built_in">list</span>) &#123;
+    <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(str);
+&#125;
+
+<span class="hljs-comment">// 内部迭代</span>
+<span class="hljs-built_in">list</span>.stream<span class="hljs-literal">()</span>.for<span class="hljs-constructor">Each(System.<span class="hljs-params">out</span>::<span class="hljs-params">println</span>)</span>;</code></pre>
+
+<p>外部迭代更像是作文题，我们不仅要控制元素的迭代方式，还需要定义怎么操作元素；内部迭代更像是填空题，我们只用关注如何操作元素就可以了。</p>
+<h3 id="流只能遍历一次"><a href="#流只能遍历一次" class="headerlink" title="流只能遍历一次"></a>流只能遍历一次</h3><p>流只能遍历一次，遍历结束后，这个流就被关闭掉了。如果要重新遍历，可以从数据源（集合）中重新获取一个流。如果你对一个流遍历两次，就会抛出java.lang.IllegalStateException异常：</p>
+<pre><code class="hljs reasonml">List&lt;String&gt; <span class="hljs-built_in">list</span> = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Arrays</span>.</span></span><span class="hljs-keyword">as</span><span class="hljs-constructor">List(<span class="hljs-string">"A"</span>, <span class="hljs-string">"B"</span>, <span class="hljs-string">"C"</span>, <span class="hljs-string">"D"</span>)</span>;
+Stream&lt;String&gt; stream = <span class="hljs-built_in">list</span>.stream<span class="hljs-literal">()</span>;
+stream.for<span class="hljs-constructor">Each(System.<span class="hljs-params">out</span>::<span class="hljs-params">println</span>)</span>;
+stream.for<span class="hljs-constructor">Each(System.<span class="hljs-params">out</span>::<span class="hljs-params">println</span>)</span>; <span class="hljs-comment">// 这里会抛出java.lang.IllegalStateException异常，因为流已经被关闭</span></code></pre>
+
+<h3 id="流通常由三部分构成："><a href="#流通常由三部分构成：" class="headerlink" title="流通常由三部分构成："></a>流通常由三部分构成：</h3><ol>
+<li>数据源：数据源一般用于流的获取，比如本文开头那个过滤用户的例子中users.stream()方法。</li>
+<li>中间处理：中间处理包括对流中元素的一系列处理，如：过滤（filter()），映射（map()），排序（sorted()）。</li>
+<li>终端处理：终端处理会生成结果，结果可以是任何不是流值，如List<String>；也可以不返回结果，如stream.forEach(System.out::println)就是将结果打印到控制台中，并没有返回。</li>
+</ol>
+<h2 id="创建流"><a href="#创建流" class="headerlink" title="创建流"></a>创建流</h2><h3 id="由值创建流"><a href="#由值创建流" class="headerlink" title="由值创建流"></a>由值创建流</h3><p>使用静态方法Stream.of()创建流，该方法接收一个变长参数：</p>
+<pre><code class="hljs arduino"><span class="hljs-built_in">Stream</span>&lt;<span class="hljs-built_in">Stream</span>&gt; stream = <span class="hljs-built_in">Stream</span>.of(<span class="hljs-string">"A"</span>, <span class="hljs-string">"B"</span>, <span class="hljs-string">"C"</span>, <span class="hljs-string">"D"</span>);
+<span class="hljs-comment">//也可以使用静态方法Stream.empty()创建一个空的流：</span>
+<span class="hljs-built_in">Stream</span>&lt;<span class="hljs-built_in">Stream</span>&gt; stream = <span class="hljs-built_in">Stream</span>.empty();</code></pre>
+
+<h3 id="由数组、集合-创建流"><a href="#由数组、集合-创建流" class="headerlink" title="由数组、集合 创建流"></a>由数组、集合 创建流</h3><p>使用静态方法Arrays.stream()从数组创建一个流，该方法接收一个数组参数：</p>
+<pre><code class="hljs armasm"><span class="hljs-keyword">String[] </span><span class="hljs-keyword">strs </span>= &#123;<span class="hljs-string">"A"</span>, <span class="hljs-string">"B"</span>, <span class="hljs-string">"C"</span>, <span class="hljs-string">"D"</span>&#125;<span class="hljs-comment">;</span>
+<span class="hljs-keyword">Stream&lt;Stream&gt; </span><span class="hljs-keyword">stream </span>= Arrays.<span class="hljs-keyword">stream(strs);</span></code></pre>
+
+<h3 id="通过文件生成流"><a href="#通过文件生成流" class="headerlink" title="通过文件生成流"></a>通过文件生成流</h3><p>使用java.nio.file.Files类中的很多静态方法都可以获取流，比如Files.lines()方法，该方法接收一个java.nio.file.Path对象，返回一个由文件行构成的字符串流：</p>
+<pre><code class="hljs reasonml">Stream&lt;String&gt; stream = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Files</span>.</span></span>lines(<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Paths</span>.</span></span>get(<span class="hljs-string">"text.txt"</span>), <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Charset</span>.</span></span>default<span class="hljs-constructor">Charset()</span>);</code></pre>
+
+<h3 id="通过函数创建流"><a href="#通过函数创建流" class="headerlink" title="通过函数创建流"></a>通过函数创建流</h3><p>java.util.stream.Stream中有两个静态方法用于从函数生成流，他们分别是Stream.generate()和Stream.iterate()：</p>
+<pre><code class="hljs reasonml"><span class="hljs-comment">// iteartor 打印100以内的所有偶数</span>
+<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Stream</span>.</span></span>iterate(<span class="hljs-number">0</span>, n -&gt; n + <span class="hljs-number">2</span>).limit(<span class="hljs-number">51</span>).for<span class="hljs-constructor">Each(System.<span class="hljs-params">out</span>::<span class="hljs-params">println</span>)</span>;
+
+<span class="hljs-comment">// generate 打印10个Hello Man!</span>
+<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Stream</span>.</span></span>generate(<span class="hljs-literal">()</span> -&gt; <span class="hljs-string">"Hello Man!"</span>).limit(<span class="hljs-number">10</span>).for<span class="hljs-constructor">Each(System.<span class="hljs-params">out</span>::<span class="hljs-params">println</span>)</span>;</code></pre>
+<p>值得注意的是，这两个方法生成的流都是无限流，没有固定大小，可以无穷的计算下去，可以使用limit()来限制边界。</p>
+<pre><code class="hljs reasonml"><span class="hljs-comment">//一般来说，iterate()用于生成一系列值，比如生成以当前时间开始之后的10天的日期：</span>
+<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Stream</span>.</span></span>iterate(<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">LocalDate</span>.</span></span>now<span class="hljs-literal">()</span>, date -&gt; date.plus<span class="hljs-constructor">Days(1)</span>).limit(<span class="hljs-number">10</span>).for<span class="hljs-constructor">Each(System.<span class="hljs-params">out</span>::<span class="hljs-params">println</span>)</span>;
+<span class="hljs-comment">//generate()方法用于生成一些随机数，比如生成10个UUID：</span>
+<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Stream</span>.</span></span>generate(<span class="hljs-literal">()</span> -&gt; <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">UUID</span>.</span></span>random<span class="hljs-constructor">UUID()</span>.<span class="hljs-keyword">to</span><span class="hljs-constructor">String()</span>).limit(<span class="hljs-number">10</span>).for<span class="hljs-constructor">Each(System.<span class="hljs-params">out</span>::<span class="hljs-params">println</span>)</span>;</code></pre>
+
+<h3 id="collect-toList-将流中的值转换为集合"><a href="#collect-toList-将流中的值转换为集合" class="headerlink" title="collect(toList())将流中的值转换为集合"></a>collect(toList())将流中的值转换为集合</h3><pre><code class="hljs reasonml"><span class="hljs-comment">//of从初识值生成新的stream，再通过collect(toList())生成新的集合</span>
+List&lt;String&gt; collect = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Stream</span>.</span></span><span class="hljs-keyword">of</span>(<span class="hljs-string">"aa"</span>, <span class="hljs-string">"bb"</span>, <span class="hljs-string">"cc"</span>, <span class="hljs-string">"aa"</span>, <span class="hljs-string">"bb"</span>).collect(<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Collectors</span>.</span></span><span class="hljs-keyword">to</span><span class="hljs-constructor">List()</span>);</code></pre>
+
+<p>of是惰性求值，不生成新的集合，通过collect(toList())这种及早求值才生成新的集合。返回值是stream就是惰性求值，返回值为另一个值或者空就是及早求值。</p>
+<h3 id="惰性求值与及早求值的区别"><a href="#惰性求值与及早求值的区别" class="headerlink" title="惰性求值与及早求值的区别"></a>惰性求值与及早求值的区别</h3><pre><code class="hljs processing"><span class="hljs-comment">//如下加count就是及早求值，会sout输出strs。不加count，程序不输出任何信息</span>
+strs.stream().<span class="hljs-built_in">filter</span>(<span class="hljs-built_in">str</span> -&gt; &#123;
+    System.out.<span class="hljs-built_in">println</span>(<span class="hljs-built_in">str</span>);
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">str</span>.startsWith(<span class="hljs-string">"a"</span>);
+&#125;
+).count();</code></pre>
+
+<p>过滤+计数，只循环了一次。只执行fileter会返回一个stream，他不是一个新集合，仅仅是创建新集合的配方。</p>
+<h2 id="流常用方法"><a href="#流常用方法" class="headerlink" title="流常用方法"></a>流常用方法</h2><h3 id="过滤和排序"><a href="#过滤和排序" class="headerlink" title="过滤和排序"></a>过滤和排序</h3><pre><code class="hljs angelscript">Stream.of(<span class="hljs-number">1</span>, <span class="hljs-number">8</span>, <span class="hljs-number">5</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, <span class="hljs-number">9</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">4</span>, <span class="hljs-number">8</span>)
+    .filter(n -&gt; n &gt; <span class="hljs-number">2</span>)     <span class="hljs-comment">// 对元素过滤，保留大于2的元素</span>
+    .distinct()             <span class="hljs-comment">// 去重，类似于SQL语句中的DISTINCT</span>
+    .skip(<span class="hljs-number">1</span>)                <span class="hljs-comment">// 跳过前面1个元素</span>
+    .limit(<span class="hljs-number">2</span>)               <span class="hljs-comment">// 返回开头2个元素，类似于SQL语句中的SELECT TOP</span>
+    .sorted()               <span class="hljs-comment">// 对结果排序</span>
+    .forEach(System.<span class="hljs-keyword">out</span>::println);</code></pre>
+
+<p>filter 对集合的值进行过滤，必须返回true或者false</p>
+<h3 id="查找和匹配"><a href="#查找和匹配" class="headerlink" title="查找和匹配"></a>查找和匹配</h3><pre><code class="hljs reasonml"><span class="hljs-comment">//检查流中的任意元素是否包含字符串"PHP"</span>
+boolean match1 = get<span class="hljs-constructor">Stream()</span>.any<span class="hljs-constructor">Match(<span class="hljs-params">s</span> -&gt; <span class="hljs-params">s</span>.<span class="hljs-params">equals</span>(<span class="hljs-string">"PHP"</span>)</span>);
+<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(match1);
+boolean match2 = get<span class="hljs-constructor">Stream()</span>.collect(<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Collectors</span>.</span></span><span class="hljs-keyword">to</span><span class="hljs-constructor">List()</span>).contains(<span class="hljs-string">"PHP"</span>);
+<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(match2);
+
+<span class="hljs-comment">// 检查流中的所有元素是否都包含字符串"#"</span>
+boolean hasAllMatch = get<span class="hljs-constructor">Stream()</span>.all<span class="hljs-constructor">Match(<span class="hljs-params">s</span> -&gt; <span class="hljs-params">s</span>.<span class="hljs-params">contains</span>(<span class="hljs-string">"#"</span>)</span>);
+
+<span class="hljs-comment">// 检查流中的任意元素是否没有以"C"开头的字符串</span>
+boolean hasNoneMatch = get<span class="hljs-constructor">Stream()</span>.none<span class="hljs-constructor">Match(<span class="hljs-params">s</span> -&gt; <span class="hljs-params">s</span>.<span class="hljs-params">startsWith</span>(<span class="hljs-string">"C"</span>)</span>);
+
+<span class="hljs-comment">// 查找元素</span>
+Optional&lt;String&gt; element = get<span class="hljs-constructor">Stream()</span>.ilter(s -&gt; s.contains(<span class="hljs-string">"C"</span>))
+    <span class="hljs-comment">// .findFirst()     // 查找第一个元素</span>
+    .find<span class="hljs-constructor">Any()</span>;         <span class="hljs-comment">// 查找任意元素</span>
+ 
+<span class="hljs-comment">//获取初始流   </span>
+<span class="hljs-keyword">private</span> static Stream&lt;String&gt; get<span class="hljs-constructor">Stream()</span> &#123;
+    return <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Stream</span>.</span></span><span class="hljs-keyword">of</span>(<span class="hljs-string">"Java"</span>, <span class="hljs-string">"C#"</span>, <span class="hljs-string">"PHP"</span>, <span class="hljs-string">"C++"</span>, <span class="hljs-string">"Python"</span>);
+&#125;</code></pre>
+
+<ol>
+<li>每次都需要重新getStream()来获取新的流，因为之前的流已经使用并且关闭了。可以理解为若返回值不是stream，则表示已经结束了流操作</li>
+<li>findAny的返回类型是一个Optional<T>类（java.util.Optional），它一个容器类，代表一个值存在或不存在，用来避免控制正异常。</li>
+<li>findFirst()和findAny()返回的都是第一个元素，通过查看javadoc描述，大致意思是findAny()是为了提高并行操作时的性能。数据大时可findany。</li>
+</ol>
+<h3 id="归约"><a href="#归约" class="headerlink" title="归约"></a>归约</h3><p>归约操作就是将流中的元素进行合并，形成一个新的值，常见的归约操作包括求和，求最大值或最小值。归约操作一般使用reduce()方法，与map()方法搭配使用，可以处理一些很复杂的归约操作。</p>
+<pre><code class="hljs lasso"><span class="hljs-comment">// 获取流</span>
+<span class="hljs-built_in">List</span>&lt;Book&gt; books = Arrays.asList(
+   <span class="hljs-literal">new</span> Book(<span class="hljs-string">"Java编程思想"</span>, <span class="hljs-string">"Bruce Eckel"</span>, <span class="hljs-string">"机械工业出版社"</span>, <span class="hljs-number">108.00</span>D),
+   <span class="hljs-literal">new</span> Book(<span class="hljs-string">"Java 8实战"</span>, <span class="hljs-string">"Mario Fusco"</span>, <span class="hljs-string">"人民邮电出版社"</span>, <span class="hljs-number">79.00</span>D),
+   <span class="hljs-literal">new</span> Book(<span class="hljs-string">"MongoDB权威指南（第2版）"</span>, <span class="hljs-string">"Kristina Chodorow"</span>, <span class="hljs-string">"人民邮电出版社"</span>, <span class="hljs-number">69.00</span>D)
+);
+
+<span class="hljs-comment">// 计算所有图书的总价</span>
+Optional&lt;Double&gt; totalPrice = books.stream()
+       .<span class="hljs-built_in">map</span>(Book<span class="hljs-type">::getPrice</span>)
+       .reduce((n, m) -&gt; n + m);
+
+<span class="hljs-comment">// 价格最高的图书</span>
+Optional&lt;Book&gt; expensive = books.stream().<span class="hljs-keyword">max</span>(Comparator.comparing(Book<span class="hljs-type">::getPrice</span>));
+
+<span class="hljs-comment">// 价格最低的图书</span>
+Optional&lt;Book&gt; cheapest = books.stream().<span class="hljs-keyword">min</span>(Comparator.comparing(Book<span class="hljs-type">::getPrice</span>));
+
+<span class="hljs-comment">// 计算总数</span>
+long count = books.stream().count()</code></pre>
+
+<h3 id="reduce从一组值中生成一个值，如累加。"><a href="#reduce从一组值中生成一个值，如累加。" class="headerlink" title="reduce从一组值中生成一个值，如累加。"></a>reduce从一组值中生成一个值，如累加。</h3><pre><code class="hljs angelscript"><span class="hljs-comment">//0初始值，total总值，index循环的每一个值。</span>
+Integer num = Stream.of(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>).reduce(<span class="hljs-number">0</span>, (total, index) -&gt; total + index);</code></pre>
+
+<h3 id="max-min-传入comparator进行大小比较，返回Optional对象"><a href="#max-min-传入comparator进行大小比较，返回Optional对象" class="headerlink" title="max(min) 传入comparator进行大小比较，返回Optional对象"></a>max(min) 传入comparator进行大小比较，返回Optional对象</h3><pre><code class="hljs maxima">//Optional对象(代表一个可能存在也可能不存在的值，NPE方案),通过<span class="hljs-built_in">get</span>拿到Optional对象中的值
+Integer <span class="hljs-built_in">integer</span> = Stream.of(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>).<span class="hljs-built_in">min</span>(Comparator.comparing(<span class="hljs-built_in">num</span> -&gt; <span class="hljs-built_in">num</span>)).<span class="hljs-built_in">get</span>();</code></pre>
+
+<h3 id="map-将流中的值转换为新值"><a href="#map-将流中的值转换为新值" class="headerlink" title="map 将流中的值转换为新值"></a>map 将流中的值转换为新值</h3><pre><code class="hljs reasonml"><span class="hljs-comment">//将list小写处理成大写</span>
+<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Stream</span>.</span></span><span class="hljs-keyword">of</span>(<span class="hljs-string">"aa"</span>, <span class="hljs-string">"bb"</span>, <span class="hljs-string">"cc"</span>, <span class="hljs-string">"aa"</span>, <span class="hljs-string">"bb"</span>).map(str -&gt; str.<span class="hljs-keyword">to</span><span class="hljs-constructor">UpperCase()</span>).collect(<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Collectors</span>.</span></span><span class="hljs-keyword">to</span><span class="hljs-constructor">List()</span>);</code></pre>
+
+<h3 id="flatmap-把多个stream合并成一个stream并返回"><a href="#flatmap-把多个stream合并成一个stream并返回" class="headerlink" title="flatmap 把多个stream合并成一个stream并返回"></a>flatmap 把多个stream合并成一个stream并返回</h3><p>与map()方法类似的还有一个flatMap()，flatMap()方法让你把一个流中的每个值都换成另一个流，然后把所有的流连接起来成为一个新的流。</p>
+<pre><code class="hljs reasonml"><span class="hljs-comment">//传统for循环</span>
+List&lt;String&gt; names0 = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;<span class="hljs-literal">()</span>;
+for (Company company : data) &#123;
+    List&lt;User&gt; users = company.get<span class="hljs-constructor">Uesrs()</span>;
+    for (User user : users) &#123;
+        <span class="hljs-keyword">if</span> (user.get<span class="hljs-constructor">Age()</span> &gt; <span class="hljs-number">30</span>) &#123;
+            names0.add(user.get<span class="hljs-constructor">Name()</span>);
+        &#125;
+    &#125;
+&#125;
+<span class="hljs-comment">//lambda方式1</span>
+List&lt;String&gt; names1 = data.stream<span class="hljs-literal">()</span>
+    .flat<span class="hljs-constructor">Map(<span class="hljs-params">company</span> -&gt; <span class="hljs-params">company</span>.<span class="hljs-params">getUesrs</span>()</span>.stream<span class="hljs-literal">()</span>)
+    .filter(user -&gt; user.get<span class="hljs-constructor">Age()</span> &gt; <span class="hljs-number">30</span>)
+    .map(user -&gt; user.get<span class="hljs-constructor">Name()</span>)
+    .collect(<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Collectors</span>.</span></span><span class="hljs-keyword">to</span><span class="hljs-constructor">List()</span>);
+<span class="hljs-comment">//lambda方式2</span>
+List&lt;String&gt; names2 = data.stream<span class="hljs-literal">()</span>
+    .map(Company::getUesrs)
+    .flat<span class="hljs-constructor">Map(Collection::<span class="hljs-params">stream</span>)</span>
+    .filter(user -&gt; user.get<span class="hljs-constructor">Age()</span> &gt; <span class="hljs-number">30</span>)
+    .map(User::getName)
+    .collect(<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Collectors</span>.</span></span><span class="hljs-keyword">to</span><span class="hljs-constructor">List()</span>);</code></pre>
+
+<p>使用flatMap()方法的效果是，各个数组并不是分别映射成一个流，而是映射成流的内容。所有使用map(Arrays::stream)时生成的单个流都被合并起来，也就是对流扁平化操作。</p>
+<h3 id="peek-用于记录中间值（输出流中的值），不会改变流。一般用作日志输出，断点调试。"><a href="#peek-用于记录中间值（输出流中的值），不会改变流。一般用作日志输出，断点调试。" class="headerlink" title="peek 用于记录中间值（输出流中的值），不会改变流。一般用作日志输出，断点调试。"></a>peek 用于记录中间值（输出流中的值），不会改变流。一般用作日志输出，断点调试。</h3><pre><code class="hljs reasonml">List&lt;Integer&gt; nums = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Stream</span>.</span></span><span class="hljs-keyword">of</span>(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>).collect(<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Collectors</span>.</span></span><span class="hljs-keyword">to</span><span class="hljs-constructor">List()</span>);
+nums.stream<span class="hljs-literal">()</span>.filter(num -&gt; num &gt; <span class="hljs-number">3</span>).peek(num -&gt; &#123;
+    <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(num);
+&#125;).collect(<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Collectors</span>.</span></span><span class="hljs-keyword">to</span><span class="hljs-constructor">List()</span>);</code></pre>
+
+<h2 id="数据收集"><a href="#数据收集" class="headerlink" title="数据收集"></a>数据收集</h2><p>前面总结了如何创建流以及流处理，接下来总结下数据收集。数据收集是流式数据处理的终端处理，<strong>与中间处理不同的是，终端处理会消耗流，也就是说，终端处理之后，这个流就会被关闭，如果再进行中间处理，就会抛出异常</strong>。数据收集主要使用collect方法，该方法也属于归约操作，像reduce()方法那样可以接收各种做法作为参数，将流中的元素累积成一个汇总结果，具体的做法是通过定义新的Collector接口来定义的。</p>
+<h3 id="可以静态导入Collectors和Comparator两个类，这样就不用再去写Collectors-counting-和Comparator-comparing-。"><a href="#可以静态导入Collectors和Comparator两个类，这样就不用再去写Collectors-counting-和Comparator-comparing-。" class="headerlink" title="可以静态导入Collectors和Comparator两个类，这样就不用再去写Collectors.counting()和Comparator.comparing()。"></a>可以静态导入Collectors和Comparator两个类，这样就不用再去写Collectors.counting()和Comparator.comparing()。</h3><pre><code class="hljs gradle"><span class="hljs-keyword">import</span> <span class="hljs-keyword">static</span> java.util.stream.Collectors.*;
+<span class="hljs-keyword">import</span> <span class="hljs-keyword">static</span> java.util.Comparator.*;
+
+<span class="hljs-comment">// 求和</span>
+<span class="hljs-keyword">long</span> <span class="hljs-keyword">count</span> = books.stream().<span class="hljs-keyword">collect</span>(counting());
+<span class="hljs-comment">// 价格最高的图书</span>
+Optional&lt;Book&gt; expensive = books.stream().<span class="hljs-keyword">collect</span>(maxBy(comparing(Book::getPrice)));
+<span class="hljs-comment">// 价格最低的图书</span>
+Optional&lt;Book&gt; cheapest = books.stream().<span class="hljs-keyword">collect</span>(minBy(comparing(Book::getPrice)));</code></pre>
+
+<h3 id="收集顺序"><a href="#收集顺序" class="headerlink" title="收集顺序"></a>收集顺序</h3><pre><code class="hljs plain">进有序，出有序；进无序，出无序。</code></pre>
+
+<h3 id="特定收集器"><a href="#特定收集器" class="headerlink" title="特定收集器"></a>特定收集器</h3><pre><code class="hljs reasonml">stream.collect(<span class="hljs-keyword">to</span><span class="hljs-constructor">Collection(TreeSet::<span class="hljs-params">new</span>)</span>);</code></pre>
+
+<h3 id="字符串操作joining"><a href="#字符串操作joining" class="headerlink" title="字符串操作joining"></a>字符串操作joining</h3><pre><code class="hljs reasonml"><span class="hljs-comment">//将流中的字符串通过逗号连接成一个新的字符串</span>
+String str = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Stream</span>.</span></span><span class="hljs-keyword">of</span>(<span class="hljs-string">"A"</span>, <span class="hljs-string">"B"</span>, <span class="hljs-string">"C"</span>, <span class="hljs-string">"D"</span>).collect(joining(<span class="hljs-string">","</span>));
+List&lt;Integer&gt; data = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Stream</span>.</span></span><span class="hljs-keyword">of</span>(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>).collect(<span class="hljs-keyword">to</span><span class="hljs-constructor">List()</span>);
+List&lt;Integer&gt; integers = <span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Arrays</span>.</span></span><span class="hljs-keyword">as</span><span class="hljs-constructor">List(1, 2, 3, 4, 5)</span>;
+
+<span class="hljs-comment">//前后缀拼接</span>
+<span class="hljs-comment">//传统for循环</span>
+StringBuilder sb = <span class="hljs-keyword">new</span> <span class="hljs-constructor">StringBuilder(<span class="hljs-string">"["</span>)</span>;
+for (Integer num : integers) &#123;
+    sb.append(num).append(<span class="hljs-string">", "</span>);
+&#125;
+sb.append(<span class="hljs-string">"]"</span>);
+<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(sb);
+<span class="hljs-comment">//lambda循环（map是为了将int转为string）</span>
+String str = data.stream<span class="hljs-literal">()</span>.map(String::valueOf).collect(joining(<span class="hljs-string">","</span>, <span class="hljs-string">"["</span>, <span class="hljs-string">"]"</span>));
+<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">System</span>.</span></span>out.println(str);</code></pre>
+
+<h3 id="数据分块（parttitioningBy，将流分解成两个集合），传入一个pridicate对象来判断属于哪部分。"><a href="#数据分块（parttitioningBy，将流分解成两个集合），传入一个pridicate对象来判断属于哪部分。" class="headerlink" title="数据分块（parttitioningBy，将流分解成两个集合），传入一个pridicate对象来判断属于哪部分。"></a>数据分块（parttitioningBy，将流分解成两个集合），传入一个pridicate对象来判断属于哪部分。</h3><pre><code class="hljs pgsql">//数据分块：将数据分成<span class="hljs-keyword">true</span>和<span class="hljs-keyword">false</span>两部分
+Map&lt;<span class="hljs-type">Boolean</span>, List&lt;<span class="hljs-keyword">User</span>&gt;&gt; res = users.stream().collect(partitioningBy(<span class="hljs-keyword">user</span> -&gt; <span class="hljs-keyword">user</span>.getName().length() &gt; <span class="hljs-number">3</span>));</code></pre>
+
+<h3 id="数据分组（groupingBy）"><a href="#数据分组（groupingBy）" class="headerlink" title="数据分组（groupingBy）"></a>数据分组（groupingBy）</h3><pre><code class="hljs lasso"><span class="hljs-comment">//数据分组：将数据以某个key值分成多部分</span>
+<span class="hljs-built_in">Map</span>&lt;<span class="hljs-built_in">String</span>, <span class="hljs-built_in">List</span>&lt;User&gt;&gt; result = users.stream().collect(groupingBy(user -&gt; user.getAddress()));
+<span class="hljs-built_in">Map</span>&lt;<span class="hljs-built_in">String</span>, <span class="hljs-built_in">List</span>&lt;User&gt;&gt; result = users.stream().collect(groupingBy(User<span class="hljs-type">::getAddress</span>));</code></pre>
+
+<h3 id="组合收集器（下游收集器），在主收集器中应用下级收集器，对结果进行再次封装。"><a href="#组合收集器（下游收集器），在主收集器中应用下级收集器，对结果进行再次封装。" class="headerlink" title="组合收集器（下游收集器），在主收集器中应用下级收集器，对结果进行再次封装。"></a>组合收集器（下游收集器），在主收集器中应用下级收集器，对结果进行再次封装。</h3><pre><code class="hljs reasonml"><span class="hljs-comment">//将数据分组后，不是返回每组的数据，而是统计每组的个数返回。</span>
+Map&lt;String, Long&gt; collect1 = users.stream<span class="hljs-literal">()</span>.collect(grouping<span class="hljs-constructor">By(User::<span class="hljs-params">getName</span>, <span class="hljs-params">counting</span>()</span>));
+
+<span class="hljs-comment">//通过mapping可以进行其他二次收集。</span>
+Map&lt;String, List&lt;String&gt;&gt; collect2 = users.stream<span class="hljs-literal">()</span>.collect(grouping<span class="hljs-constructor">By(User::<span class="hljs-params">getAddress</span>, <span class="hljs-params">mapping</span>(User::<span class="hljs-params">getName</span>, <span class="hljs-params">toList</span>()</span>) ));
+
+函数拆分示例：collect( grouping<span class="hljs-constructor">By(<span class="hljs-params">key1</span>,  <span class="hljs-params">mapping</span>(<span class="hljs-params">key2</span>,  <span class="hljs-params">value</span>)</span>  )  )</code></pre>
+
+<h2 id="进阶集合操作"><a href="#进阶集合操作" class="headerlink" title="进阶集合操作"></a>进阶集合操作</h2><h3 id="map的foreach循环"><a href="#map的foreach循环" class="headerlink" title="map的foreach循环"></a>map的foreach循环</h3><pre><code class="hljs lasso"><span class="hljs-built_in">Map</span>&lt;<span class="hljs-built_in">String</span>, <span class="hljs-built_in">Integer</span>&gt; <span class="hljs-keyword">cache</span> = <span class="hljs-literal">new</span> HashMap&lt;&gt;();
+<span class="hljs-built_in">Map</span>&lt;<span class="hljs-built_in">String</span>, <span class="hljs-built_in">List</span>&lt;User&gt;&gt; users = <span class="hljs-literal">new</span> HashMap&lt;<span class="hljs-built_in">String</span>, <span class="hljs-built_in">List</span>&lt;User&gt;&gt;();
+
+<span class="hljs-comment">//传统for循环</span>
+for (<span class="hljs-built_in">Map</span>.Entry&lt;<span class="hljs-built_in">String</span>, <span class="hljs-built_in">List</span>&lt;User&gt;&gt; entry : users.entrySet()) &#123;
+    <span class="hljs-built_in">String</span> key = entry.getKey();
+    <span class="hljs-built_in">List</span>&lt;User&gt; value = entry.getValue();
+    <span class="hljs-keyword">cache</span>.put(key, value.size());
+&#125;
+<span class="hljs-comment">//lambda方式</span>
+users.forEach((key, value) -&gt; &#123;
+    <span class="hljs-keyword">cache</span>.put(key, value.size());
+&#125;);</code></pre>
+
+<h3 id="computeIfAbsent"><a href="#computeIfAbsent" class="headerlink" title="computeIfAbsent"></a>computeIfAbsent</h3><p>根据key获取某个值，若值不存在，丛数据库中取</p>
+<pre><code class="hljs pgsql">//传统方式
+<span class="hljs-built_in">public</span> List&lt;<span class="hljs-keyword">User</span>&gt; getUserByName(String <span class="hljs-type">name</span>) &#123;
+    List&lt;<span class="hljs-keyword">User</span>&gt; <span class="hljs-keyword">user</span> = users.<span class="hljs-keyword">get</span>(<span class="hljs-type">name</span>);
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">user</span> == <span class="hljs-keyword">null</span>) &#123;
+        <span class="hljs-keyword">user</span> = readFromDB(<span class="hljs-type">name</span>);
+        users.put(<span class="hljs-type">name</span>, <span class="hljs-keyword">user</span>);
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">user</span>;
+&#125;
+//lambda方式
+<span class="hljs-built_in">public</span> List&lt;<span class="hljs-keyword">User</span>&gt; getUser1ByName(String <span class="hljs-type">name</span>) &#123;
+    <span class="hljs-keyword">return</span> users.computeIfAbsent(<span class="hljs-type">name</span>, this::readFromDB);
+&#125;
+
+private List&lt;<span class="hljs-keyword">User</span>&gt; readFromDB(String <span class="hljs-type">name</span>) &#123;
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">new</span> ArrayList&lt;&gt;();
+&#125;</code></pre>
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/blog/categories/java/">java</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/blog/tags/stream/">stream</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/blog/2020/05/31/java8%E6%96%B9%E6%B3%95%E5%BC%95%E7%94%A8%E7%90%86%E8%A7%A3/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">java8方法引用理解</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/blog/2020/05/31/hello-world/">
+                        <span class="hidden-mobile">Hello World</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/blog/js/debouncer.js" ></script>
+<script  src="/blog/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/blog/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/blog/js/clipboard-use.js" ></script>
+
+
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "java8新特性之Stream&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/blog/js/local-search.js" ></script>
+  <script>
+    var path = "/blog/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

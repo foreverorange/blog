@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2020/05/31/eureka%E5%AF%B9%E6%AF%94zookeeper/</loc>
+    
+    <lastmod>2020-06-02T14:28:23.975Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2020/06/02/mybatis-generator/</loc>
     
     <lastmod>2020-06-02T14:22:44.280Z</lastmod>
@@ -26,13 +33,6 @@
     <loc>http://yoursite.com/2020/05/31/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</loc>
     
     <lastmod>2020-05-31T14:47:12.805Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2020/05/31/eureka%E5%AF%B9%E6%AF%94zookeeper/</loc>
-    
-    <lastmod>2020-05-31T13:27:33.180Z</lastmod>
     
   </url>
   

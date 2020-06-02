@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Hexo</title>
+  <title>foreverorange</title>
   
   
   <link href="/blog/atom.xml" rel="self"/>
@@ -10,7 +10,7 @@
   <id>http://yoursite.com/</id>
   
   <author>
-    <name>John Doe</name>
+    <name>foreverorange</name>
     
   </author>
   
@@ -124,11 +124,11 @@
   </entry>
   
   <entry>
-    <title>euewka对比zookeeper</title>
+    <title>eureka对比zookeeper</title>
     <link href="http://yoursite.com/2020/05/31/eureka%E5%AF%B9%E6%AF%94zookeeper/"/>
     <id>http://yoursite.com/2020/05/31/eureka%E5%AF%B9%E6%AF%94zookeeper/</id>
     <published>2020-05-31T13:09:42.000Z</published>
-    <updated>2020-05-31T13:27:33.180Z</updated>
+    <updated>2020-06-02T14:28:23.975Z</updated>
     
     <content type="html"><![CDATA[<h1 id="cap原则"><a href="#cap原则" class="headerlink" title="cap原则"></a>cap原则</h1><h2 id="一、回顾"><a href="#一、回顾" class="headerlink" title="一、回顾"></a>一、回顾</h2><ul><li><p>ACID 原则</p><ul><li>关系数据库管理系统（Relational Database Management System：<em>RDBMS</em>），如mysql、oracle、sqlserver</li><li>A（atomicity）原子性</li><li>C（consistency）一致性</li><li>I（Isolation）隔离性</li><li>D（durability）持久性</li></ul></li><li><p>CAP原则</p><ul><li><p>一般用于redis、mongdb</p></li><li><p>C（consistency）一致性</p></li><li><p>A（avaibility）可用性</p></li><li><p>P（partition tolerance）分区容错性</p></li></ul></li></ul><blockquote><p>由于P 分区容错性在分布式系统中是必须要满足的，所以只能在c、a之间权衡</p></blockquote><h2 id="二、zookeeper保证的是CP"><a href="#二、zookeeper保证的是CP" class="headerlink" title="二、zookeeper保证的是CP"></a>二、zookeeper保证的是CP</h2><h2 id="三、eureka保证的是AP"><a href="#三、eureka保证的是AP" class="headerlink" title="三、eureka保证的是AP"></a>三、eureka保证的是AP</h2>]]></content>
     

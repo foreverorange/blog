@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/blog/img/favicon.png">
+  <link rel="icon" type="image/png" href="/blog/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  <title>mybatis-generator - Hexo</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/blog/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/blog/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/blog/atom.xml" title="Hexo" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/blog/">&nbsp;<strong>扬帆！起航！！</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/blog/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-06-02 21:36">
+      2020年6月2日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      19
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <h2 id="1-作用"><a href="#1-作用" class="headerlink" title="1.作用"></a>1.作用</h2><p>用来自动生成MyBatis的 mapper、dao、entity </p>
+<h2 id="2-使用"><a href="#2-使用" class="headerlink" title="2.使用"></a>2.使用</h2><p>MyBatis Generator的使用方式有4种：</p>
+<ul>
+<li>命令行生成</li>
+<li>Maven方式生成</li>
+<li>使用Ant任务生成</li>
+<li>使用Java代码生成</li>
+</ul>
+<p>其中推荐使用Maven方式进行代码生成，因为集成和使用比较简单。</p>
+<h2 id="3-代码自动生成配置"><a href="#3-代码自动生成配置" class="headerlink" title="3.代码自动生成配置"></a>3.代码自动生成配置</h2><h3 id="Step1：配置pom中plugin依赖"><a href="#Step1：配置pom中plugin依赖" class="headerlink" title="Step1：配置pom中plugin依赖"></a>Step1：配置pom中plugin依赖</h3><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.mybatis.generator<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>mybatis-generator-maven-plugin<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.4.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">executions</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">execution</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span>Generate MyBatis Artifacts<span class="hljs-tag">&lt;/<span class="hljs-name">id</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">phase</span>&gt;</span>package<span class="hljs-tag">&lt;/<span class="hljs-name">phase</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">goals</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">goal</span>&gt;</span>generate<span class="hljs-tag">&lt;/<span class="hljs-name">goal</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">goals</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">execution</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">executions</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span>
+        <span class="hljs-comment">&lt;!--允许移动生成的文件 --&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">verbose</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">verbose</span>&gt;</span>
+        <span class="hljs-comment">&lt;!-- 是否覆盖 --&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">overwrite</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">overwrite</span>&gt;</span>
+        <span class="hljs-comment">&lt;!-- 自动生成的配置 --&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">configurationFile</span>&gt;</span>src/main/resources/generatorConfig.xml<span class="hljs-tag">&lt;/<span class="hljs-name">configurationFile</span>&gt;</span>
+        <span class="hljs-comment">&lt;!--将当前pom的依赖项添加到生成器的类路径中--&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">includeCompileDependencies</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">includeCompileDependencies</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span></code></pre>
+
+<h3 id="Step2：配置generatorConfig-xml文件"><a href="#Step2：配置generatorConfig-xml文件" class="headerlink" title="Step2：配置generatorConfig.xml文件"></a>Step2：配置generatorConfig.xml文件</h3><pre><code class="hljs dust"><span class="xml"><span class="hljs-meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span>
+<span class="xml"><span class="hljs-comment">&lt;!--mybatis的代码生成器相关配置--&gt;</span></span>
+<span class="xml"><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-meta-keyword">generatorConfiguration</span></span></span>
+<span class="xml">        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"</span>
+<span class="xml">        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd"&gt;</span>
+<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">generatorConfiguration</span>&gt;</span></span>
+<span class="xml">    <span class="hljs-comment">&lt;!-- 引入配置文件 --&gt;</span></span>
+<span class="xml">    <span class="hljs-tag">&lt;<span class="hljs-name">properties</span> <span class="hljs-attr">resource</span>=<span class="hljs-string">"application.yml"</span>/&gt;</span>   </span>
+<span class="xml">    <span class="hljs-tag">&lt;<span class="hljs-name">context</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"Mysql"</span> <span class="hljs-attr">targetRuntime</span>=<span class="hljs-string">"MyBatis3Simple"</span> <span class="hljs-attr">defaultModelType</span>=<span class="hljs-string">"flat"</span>&gt;</span></span>
+<span class="xml">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"autoDelimitKeywords"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"true"</span> /&gt;</span></span>
+<span class="xml">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"beginningDelimiter"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"`"</span> /&gt;</span></span>
+<span class="xml">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"endingDelimiter"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"`"</span> /&gt;</span></span>
+<span class="xml">        <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"javaFileEncoding"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"utf-8"</span> /&gt;</span></span>
+
+<span class="xml">        <span class="hljs-tag">&lt;<span class="hljs-name">plugin</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"org.mybatis.generator.plugins.SerializablePlugin"</span> /&gt;</span></span>
+
+<span class="xml">        <span class="hljs-tag">&lt;<span class="hljs-name">commentGenerator</span> &gt;</span></span>
+<span class="xml">            <span class="hljs-comment">&lt;!-- 不生成注释 --&gt;</span></span>
+<span class="xml">            <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"suppressAllComments"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"true"</span>/&gt;</span></span>
+<span class="xml">            <span class="hljs-comment">&lt;!-- 不生成注释代时间戳--&gt;</span></span>
+<span class="xml">            <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"suppressDate"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"true"</span> /&gt;</span></span>
+<span class="xml">        <span class="hljs-tag">&lt;/<span class="hljs-name">commentGenerator</span>&gt;</span></span>
+
+<span class="xml">        <span class="hljs-comment">&lt;!--数据库链接地址账号密码--&gt;</span></span>
+<span class="xml">        <span class="hljs-comment">&lt;!--&lt;jdbcConnection driverClass="$</span></span><span class="hljs-template-variable">&#123;spring.datasource.driver-class-name&#125;</span><span class="xml"><span class="hljs-comment">"--&gt;</span></span>
+<span class="xml">                        <span class="hljs-comment">&lt;!--connectionURL="$</span></span><span class="hljs-template-variable">&#123;spring.datasource.url&#125;</span><span class="xml"><span class="hljs-comment">"--&gt;</span></span>
+<span class="xml">                        <span class="hljs-comment">&lt;!--userId="$</span></span><span class="hljs-template-variable">&#123;spring.datasource.username&#125;</span><span class="xml"><span class="hljs-comment">"--&gt;</span></span>
+<span class="xml">                        <span class="hljs-comment">&lt;!--password="$</span></span><span class="hljs-template-variable">&#123;spring.datasource.password&#125;</span><span class="xml"><span class="hljs-comment">"&gt;--&gt;</span></span>
+<span class="xml">        <span class="hljs-comment">&lt;!--&lt;/jdbcConnection&gt;--&gt;</span></span>
+<span class="xml">        <span class="hljs-tag">&lt;<span class="hljs-name">jdbcConnection</span> <span class="hljs-attr">driverClass</span>=<span class="hljs-string">"com.mysql.cj.jdbc.Driver"</span></span></span>
+<span class="xml">            connectionURL="jdbc:mysql://localhost:3306/display"</span>
+<span class="xml">            userId="root"</span>
+<span class="xml">            password="P@ssw0rd"&gt;</span>
+<span class="xml">        <span class="hljs-tag">&lt;/<span class="hljs-name">jdbcConnection</span>&gt;</span></span>
+
+<span class="xml">        <span class="hljs-comment">&lt;!-- 类型转换 --&gt;</span></span>
+<span class="xml">        <span class="hljs-tag">&lt;<span class="hljs-name">javaTypeResolver</span>&gt;</span></span>
+<span class="xml">            <span class="hljs-comment">&lt;!-- 是否使用bigDecimal， false可自动转化以下类型（Long, Integer, Short, etc.） --&gt;</span></span>
+<span class="xml">            <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"forceBigDecimals"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"false"</span>/&gt;</span></span>
+<span class="xml">        <span class="hljs-tag">&lt;/<span class="hljs-name">javaTypeResolver</span>&gt;</span></span>
+
+<span class="xml">        <span class="hljs-comment">&lt;!--生成Model类存放位置--&gt;</span></span>
+<span class="xml">        <span class="hljs-tag">&lt;<span class="hljs-name">javaModelGenerator</span> <span class="hljs-attr">targetPackage</span>=<span class="hljs-string">"com.ztf.mybatisplus.bean"</span> <span class="hljs-attr">targetProject</span>=<span class="hljs-string">"src/main/java"</span>&gt;</span></span>
+<span class="xml">            <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"enableSubPackages"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"true"</span>/&gt;</span></span>
+<span class="xml">            <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"trimStrings"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"true"</span>/&gt;</span></span>
+<span class="xml">        <span class="hljs-tag">&lt;/<span class="hljs-name">javaModelGenerator</span>&gt;</span></span>
+
+<span class="xml">        <span class="hljs-comment">&lt;!-- 生成mapxml文件 --&gt;</span></span>
+<span class="xml">        <span class="hljs-tag">&lt;<span class="hljs-name">sqlMapGenerator</span> <span class="hljs-attr">targetPackage</span>=<span class="hljs-string">"mapper"</span> <span class="hljs-attr">targetProject</span>=<span class="hljs-string">"src/main/resources/mybatis"</span> &gt;</span></span>
+<span class="xml">            <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"enableSubPackages"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"false"</span> /&gt;</span></span>
+<span class="xml">        <span class="hljs-tag">&lt;/<span class="hljs-name">sqlMapGenerator</span>&gt;</span></span>
+
+<span class="xml">        <span class="hljs-comment">&lt;!-- 生成mapper java文件 --&gt;</span></span>
+<span class="xml">        <span class="hljs-tag">&lt;<span class="hljs-name">javaClientGenerator</span> <span class="hljs-attr">targetPackage</span>=<span class="hljs-string">"com.ztf.mybatisplus.dao"</span> <span class="hljs-attr">targetProject</span>=<span class="hljs-string">"src/main/java"</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"XMLMAPPER"</span> &gt;</span></span>
+<span class="xml">            <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"enableSubPackages"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"false"</span> /&gt;</span></span>
+<span class="xml">        <span class="hljs-tag">&lt;/<span class="hljs-name">javaClientGenerator</span>&gt;</span></span>
+
+<span class="xml">				<span class="hljs-comment">&lt;!--具体解析的表，建议配置domainObjectName属性，避免带上表前缀T_--&gt;</span></span>
+<span class="xml">        <span class="hljs-tag">&lt;<span class="hljs-name">table</span> <span class="hljs-attr">tableName</span>=<span class="hljs-string">"t_corp"</span> <span class="hljs-attr">enableCountByExample</span>=<span class="hljs-string">"true"</span> <span class="hljs-attr">domainObjectName</span>=<span class="hljs-string">"Corp"</span></span></span>
+<span class="xml">               enableUpdateByExample="true" enableDeleteByExample="true"</span>
+<span class="xml">               enableSelectByExample="true" selectByExampleQueryId="true"&gt;</span>
+<span class="xml">            <span class="hljs-comment">&lt;!--&lt;generatedKey column="id" sqlStatement="Mysql" identity="true" /&gt;--&gt;</span></span>
+<span class="xml">        <span class="hljs-tag">&lt;/<span class="hljs-name">table</span>&gt;</span></span>
+
+<span class="xml">        <span class="hljs-comment">&lt;!--&lt;table tableName="user_log" enableCountByExample="true" --&gt;</span></span>
+<span class="xml">               <span class="hljs-comment">&lt;!--enableUpdateByExample="true" enableDeleteByExample="true" --&gt;</span></span>
+<span class="xml">               <span class="hljs-comment">&lt;!--enableSelectByExample="true" selectByExampleQueryId="true"&gt;--&gt;</span></span>
+<span class="xml">            <span class="hljs-comment">&lt;!--&lt;generatedKey column="id" sqlStatement="Mysql" identity="true" /&gt;--&gt;</span></span>
+<span class="xml">        <span class="hljs-comment">&lt;!--&lt;/table&gt;--&gt;</span></span>
+
+<span class="xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">context</span>&gt;</span></span>
+<span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">generatorConfiguration</span>&gt;</span></span></code></pre>
+
+
+
+<h2 id="4-注意事项"><a href="#4-注意事项" class="headerlink" title="4.注意事项"></a>4.注意事项</h2><ul>
+<li>MyBatis Generator 只会覆盖旧的 po、dao、而 mapper.xml 不会覆盖，而是追加，这样做的目的是防止用户自己写的 sql 语句一不小心都被 MyBatis Generator 给覆盖了</li>
+</ul>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- 是否覆盖 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">overwrite</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">overwrite</span>&gt;</span></code></pre>
+
+<ul>
+<li>一般配置了 <strong>includeCompileDependencies</strong> 后就不需要配置其他依赖了，因为 <strong>includeCompileDependencies</strong> 会将当前 pom 的 <strong>dependencies</strong> 中所有 <strong>Compile</strong> 期的依赖全部添加到生成器的类路径中。</li>
+</ul>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!--将当前pom的依赖项添加到生成器的类路径中--&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">includeCompileDependencies</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">includeCompileDependencies</span>&gt;</span></code></pre>
+
+<ul>
+<li>数据库文件yml方式加载不进来配置，写成<code>application.properties&quot;</code>方式就可以</li>
+</ul>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- 引入配置文件 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">properties</span> <span class="hljs-attr">resource</span>=<span class="hljs-string">"application-dev.properties"</span>/&gt;</span></code></pre>
+
+<ul>
+<li>context属性</li>
+</ul>
+<pre><code class="hljs xml">id : 随便填，保证多个 context id 不重复就行
+defaultModelType ： 可以不填，默认值 conditional，flat表示一张表对应一个po
+targetRuntime ：可以不填，默认值 MyBatis3，常用的还有 MyBatis3Simple。MyBatis3Simple生成的 dao 和 mapper.xml 内容较少，但也包含了最常用的。</code></pre>
+
+<ul>
+<li>context的子元素要求有序</li>
+</ul>
+<pre><code class="hljs angelscript"><span class="hljs-number">1.</span> **<span class="hljs-keyword">property</span>** (<span class="hljs-number">0.</span>.N)
+<span class="hljs-number">2.</span> **plugin** (<span class="hljs-number">0.</span>.N)
+<span class="hljs-number">3.</span> **commentGenerator** (<span class="hljs-number">0</span> <span class="hljs-keyword">or</span> <span class="hljs-number">1</span>)
+<span class="hljs-number">4.</span> **jdbcConnection** (需要connectionFactory 或 jdbcConnection)
+<span class="hljs-number">5.</span> **javaTypeResolver** (<span class="hljs-number">0</span> <span class="hljs-keyword">or</span> <span class="hljs-number">1</span>)
+<span class="hljs-number">6.</span> **javaModelGenerator** (至少<span class="hljs-number">1</span>个)
+<span class="hljs-number">7.</span> **sqlMapGenerator** (<span class="hljs-number">0</span> <span class="hljs-keyword">or</span> <span class="hljs-number">1</span>)
+<span class="hljs-number">8.</span> **javaClientGenerator** (<span class="hljs-number">0</span> <span class="hljs-keyword">or</span> <span class="hljs-number">1</span>)
+<span class="hljs-number">9.</span> **table** (<span class="hljs-number">1.</span>.N)</code></pre>
+
+<ul>
+<li>commentGenerator 默认生成注释和时间戳，可显式的声明某一项不生成。<strong>建议全部显式不生成。</strong></li>
+</ul>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">commentGenerator</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- 不希望生成的注释中包含时间戳 --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"suppressDate"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"true"</span>/&gt;</span>
+    <span class="hljs-comment">&lt;!-- 不希望生成的注释中包含注释 --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">property</span> <span class="hljs-attr">name</span>=<span class="hljs-string">"suppressAllComments"</span> <span class="hljs-attr">value</span>=<span class="hljs-string">"true"</span>/&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">commentGenerator</span>&gt;</span></code></pre>
+
+<ul>
+<li><p><code>type=&quot;XMLMAPPER&quot;</code> 会将接口的实现放在 mapper.xml中，也推荐这样配置。也可以设置  <code>type=&quot;ANNOTATEDMAPPER&quot;</code>，接口的实现通过注解写在接口上面</p>
+</li>
+<li><p>一个 table 对应一张表，如果想同时生成多张表，需要配置多个 table</p>
+</li>
+<li><p><strong>domainObjectName</strong> 不配置时，它会按照帕斯卡命名法将表名转换成类名，建议配置该属性，避免带上表前缀T_</p>
+</li>
+<li><p><strong>enableXXXByExample</strong> 默认为true，但只有在<code>targetRuntime=&quot;MyBatis3&quot;</code>时才生效。当 <code>targetRuntime=&quot;MyBatis3Simple&quot;</code>时，<strong>enableXXXByExample</strong> 不管为true、还是false 都不生效。一般建议全设置为false，true的话会生成很多Example帮助类，造成很多sonar问题。</p>
+</li>
+</ul>
+<h2 id="4-参考"><a href="#4-参考" class="headerlink" title="4.参考"></a>4.参考</h2><p><a href="https://segmentfault.com/a/1190000016570268" target="_blank" rel="noopener">Spring Boot （七）MyBatis代码自动生成和辅助插件</a></p>
+<p><a href="https://juejin.im/post/5db694e3e51d452a2e25ba45" target="_blank" rel="noopener">MyBatis Generator 超详细配置</a></p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/blog/categories/mybatis/">mybatis</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/blog/tags/mybatis-generator/">mybatis-generator</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/blog/2020/06/01/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5/">
+                        <span class="hidden-mobile">性能优化策略</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'http://yoursite.com/2020/06/02/mybatis-generator/';
+        this.page.identifier = '/2020/06/02/mybatis-generator/';
+      };
+      var oldLoadDq = window.onload;
+      window.onload = function () {
+        oldLoadDq && oldLoadDq();
+
+        var d = document, s = d.createElement('script');
+        s.type = 'text/javascript';
+        s.src = '//' + 'orange' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+      };
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" target="_blank" rel="nofollow noopener noopener">comments
+        powered by Disqus.</a></noscript>
+  </div>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/blog/js/debouncer.js" ></script>
+<script  src="/blog/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/blog/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/blog/js/clipboard-use.js" ></script>
+
+
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "mybatis-generator&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/blog/js/local-search.js" ></script>
+  <script>
+    var path = "/blog/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

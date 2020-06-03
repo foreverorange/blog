@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.3k 字
+      1.4k 字
     </span>
   
 
@@ -173,7 +173,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      19
+      20
        分钟
     </span>
   
@@ -362,14 +362,23 @@ targetRuntime ：可以不填，默认值 MyBatis3，常用的还有 MyBatis3Sim
 <span class="hljs-tag">&lt;/<span class="hljs-name">commentGenerator</span>&gt;</span></code></pre>
 
 <ul>
-<li><p><code>type=&quot;XMLMAPPER&quot;</code> 会将接口的实现放在 mapper.xml中，也推荐这样配置。也可以设置  <code>type=&quot;ANNOTATEDMAPPER&quot;</code>，接口的实现通过注解写在接口上面</p>
-</li>
-<li><p>一个 table 对应一张表，如果想同时生成多张表，需要配置多个 table</p>
-</li>
-<li><p><strong>domainObjectName</strong> 不配置时，它会按照帕斯卡命名法将表名转换成类名，建议配置该属性，避免带上表前缀T_</p>
-</li>
-<li><p><strong>enableXXXByExample</strong> 默认为true，但只有在<code>targetRuntime=&quot;MyBatis3&quot;</code>时才生效。当 <code>targetRuntime=&quot;MyBatis3Simple&quot;</code>时，<strong>enableXXXByExample</strong> 不管为true、还是false 都不生效。一般建议全设置为false，true的话会生成很多Example帮助类，造成很多sonar问题。</p>
-</li>
+<li><code>type=&quot;XMLMAPPER&quot;</code> 会将接口的实现放在 mapper.xml中，也推荐这样配置。也可以设置  <code>type=&quot;ANNOTATEDMAPPER&quot;</code>，接口的实现通过注解写在接口上面</li>
+<li>一个 table 对应一张表，如果想同时生成多张表，需要配置多个 table</li>
+<li><strong>domainObjectName</strong> 不配置时，它会按照帕斯卡命名法将表名转换成类名，建议配置该属性，避免带上表前缀T_</li>
+</ul>
+<pre><code class="hljs routeros">&lt;domainObjectRenamingRule <span class="hljs-attribute">searchString</span>=<span class="hljs-string">"^T"</span> <span class="hljs-attribute">replaceString</span>=<span class="hljs-string">""</span> /&gt;</code></pre>
+
+<ul>
+<li>表字段也会默认带上<code>c_</code>、<code>d_</code>，可设置去掉</li>
+</ul>
+<pre><code class="hljs xml"><span class="hljs-comment">&lt;!-- 这个意思就是匹配，开头的任意个非下划线(_)的字符，也就是这种如：c_，d_ 等等 --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">columnRenamingRule</span> <span class="hljs-attr">searchString</span>=<span class="hljs-string">"^[^_]+"</span> <span class="hljs-attr">replaceString</span>=<span class="hljs-string">""</span>/&gt;</span>
+ 
+ <span class="hljs-comment">&lt;!-- 也可如下只去掉c_--&gt;</span> 
+ <span class="hljs-tag">&lt;<span class="hljs-name">columnRenamingRule</span> <span class="hljs-attr">searchString</span>=<span class="hljs-string">"^c_"</span> <span class="hljs-attr">replaceString</span>=<span class="hljs-string">""</span> /&gt;</span></code></pre>
+
+<ul>
+<li><strong>enableXXXByExample</strong> 默认为true，但只有在<code>targetRuntime=&quot;MyBatis3&quot;</code>时才生效。当 <code>targetRuntime=&quot;MyBatis3Simple&quot;</code>时，<strong>enableXXXByExample</strong> 不管为true、还是false 都不生效。一般建议全设置为false，true的话会生成很多Example帮助类，造成很多sonar问题。</li>
 </ul>
 <h2 id="4-参考"><a href="#4-参考" class="headerlink" title="4.参考"></a>4.参考</h2><p><a href="https://segmentfault.com/a/1190000016570268" target="_blank" rel="noopener">Spring Boot （七）MyBatis代码自动生成和辅助插件</a></p>
 <p><a href="https://juejin.im/post/5db694e3e51d452a2e25ba45" target="_blank" rel="noopener">MyBatis Generator 超详细配置</a></p>

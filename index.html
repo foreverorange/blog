@@ -168,6 +168,55 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/blog/2020/06/05/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85/" target="_self">
+          <img src="/blog/img/index_img.png" srcset="/blog/img/loading.gif" alt="生产者消费者">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a class="index-header" href="/blog/2020/06/05/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85/">生产者消费者</a>
+
+      <a href="/blog/2020/06/05/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85/" class="index-excerpt">
+        
+        
+          
+        
+        <div>一、生产者消费者生产者和消费者在同一时间段内共用同一段存储空间，生产者put数据，消费者take数据
+阻塞队列就相当于一个缓冲区，平衡了生产者和消费者的处理能力，将他们解耦。
+二、四种实现生产者消费者模型1、Object的wait() / notify()方法wait/notify 是Object的方法，因此我们可以给任何对象实现同步机制。
+wait：当缓冲区满时，生产者/消费者放弃锁，让度cpu</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-05
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/blog/categories/java/">java</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/blog/tags/thread-queue/">thread queue</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
         <a href="/blog/2020/06/03/springboot%E8%87%AA%E5%AE%9A%E4%B9%89starter/" target="_self">
           <img src="/blog/img/index_img.png" srcset="/blog/img/loading.gif" alt="springboot自定义starter">
         </a>
@@ -651,40 +700,19 @@ Object :: methodName
     </div>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/blog/2020/05/31/hello-world/" target="_self">
-          <img src="/blog/img/index_img.png" srcset="/blog/img/loading.gif" alt="Hello World">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/blog/2020/05/31/hello-world/">Hello World</a>
-
-      <a href="/blog/2020/05/31/hello-world/" class="index-excerpt">
-        
-        
-          
-        
-        <div>Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub.
-Quick</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-05-31
-          </div>
-        
-        
-        
-      </div>
-    </div>
-  </div>
 
 
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <span class="page-number current">1</span><a class="page-number" href="/blog/page/2/">2</a><a class="extend next" rel="next" href="/blog/page/2/"><i class="iconfont icon-arrowright"></i></a>
+    </span>
+  </nav>
+  
+  <script>
+    for (ele of document.getElementById("pagination").getElementsByTagName("a")) {
+      ele.href += '#board';
+    }
+  </script>
 
 
 

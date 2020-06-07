@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/blog/img/favicon.png">
+  <link rel="icon" type="image/png" href="/blog/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="foreverorange">
+  <meta name="keywords" content="">
+  <title>eureka使用 - foreverorange</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/blog/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/blog/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/blog/atom.xml" title="foreverorange" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/blog/">&nbsp;<strong>扬帆！起航！！</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/blog/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-06-07 23:20">
+      2020年6月7日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.4k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      17
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <h2 id="一、eureka是什么"><a href="#一、eureka是什么" class="headerlink" title="一、eureka是什么"></a>一、eureka是什么</h2><ul>
+<li>服务治理可以说是微服务架构中核心的模块，它主要用来实现各个微服务实例之间的自动化注册与发现。</li>
+</ul>
+<p><strong>1、服务注册：</strong></p>
+<p>每个服务单元将自己的主机号、版本号、通信协议等告知注册中心，注册中心维护服务清单，并通过心跳的方式监测清单中的服务是否可用，并剔除不可用的服务。</p>
+<p><strong>2、服务发现：</strong></p>
+<p>各服务单元通过服务名进行相互调用。</p>
+<p><strong>3、eureka服务端：</strong></p>
+<p>即服务注册中心，提供服务治理，即服务注册与发现的功能。</p>
+<blockquote>
+<p>若eureka以集群方式部署，当集群中有分片出现故障时，eureka进入自我保护模式。它允许再分片故障期间继续提供服务注册与发现，等故障恢复后，其他分片会把它们的状态再次同步回来。</p>
+</blockquote>
+<blockquote>
+<p>不同服务端通过异步的方式相互复制各自的状态，这意味着在任意时间点，每个实例关于所有服务的状态是有细微差异的。也就是我们通常所说的AP原则。</p>
+</blockquote>
+<p><strong>4、eureka客户端</strong></p>
+<p>向注册中心注册自身提供的服务，并周期性的发送心跳来更新服务租约。</p>
+<p>将服务端已注册的服务信息缓存到本地，并周期性的刷新。</p>
+<h2 id="二、单机配置方式"><a href="#二、单机配置方式" class="headerlink" title="二、单机配置方式"></a>二、单机配置方式</h2><h3 id="1、服务端"><a href="#1、服务端" class="headerlink" title="1、服务端"></a>1、服务端</h3><h4 id="1）pom中引入："><a href="#1）pom中引入：" class="headerlink" title="1）pom中引入："></a>1）pom中引入：</h4><pre><code class="hljs java">&lt;dependencies&gt;
+  &lt;dependency&gt;
+  	&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+ 	 	&lt;artifactId&gt;spring-cloud-starter-netflix-eureka-server&lt;/artifactId&gt;
+  	&lt;version&gt;2.2.3.RELEASE&lt;/version&gt;
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+
+<h4 id="2）配置文件："><a href="#2）配置文件：" class="headerlink" title="2）配置文件："></a>2）配置文件：</h4><pre><code class="hljs yaml"><span class="hljs-attr">server:</span>
+  <span class="hljs-attr">port:</span> <span class="hljs-number">8003</span>
+
+<span class="hljs-attr">eureka:</span>
+  <span class="hljs-attr">instance:</span>
+    <span class="hljs-attr">hostname:</span> <span class="hljs-string">localhost</span> <span class="hljs-comment"># eureka服务端的实例名字</span>
+  <span class="hljs-attr">client:</span>
+    <span class="hljs-attr">service-url:</span>
+      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://$&#123;eureka.instance.hostname&#125;:$&#123;server.port&#125;/eureka/</span>
+    <span class="hljs-attr">register-with-eureka:</span> <span class="hljs-literal">false</span> <span class="hljs-comment"># 是否向注册中心注册自己，默认true，server应设置为false</span>
+    <span class="hljs-attr">fetch-registry:</span> <span class="hljs-literal">false</span> <span class="hljs-comment"># 服务端本身就是维护服务实例的，所以并不需要去检索服务，默认true，server应设置为false</span></code></pre>
+
+<h4 id="3）启动类"><a href="#3）启动类" class="headerlink" title="3）启动类:"></a>3）启动类:</h4><pre><code class="hljs java"><span class="hljs-meta">@SpringBootApplication</span>
+<span class="hljs-meta">@EnableEurekaServer</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EurekaServer8003</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        SpringApplication.run(EurekaServer8003<span class="hljs-class">.<span class="hljs-keyword">class</span>, <span class="hljs-title">args</span>)</span>;
+    &#125;
+&#125;</code></pre>
+
+<h3 id="2、客户端"><a href="#2、客户端" class="headerlink" title="2、客户端"></a>2、客户端</h3><h4 id="1）pom中引入"><a href="#1）pom中引入" class="headerlink" title="1）pom中引入"></a>1）pom中引入</h4><pre><code class="hljs java">&lt;dependency&gt;
+	&lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-cloud-starter-netflix-eureka-client&lt;/artifactId&gt;
+	&lt;version&gt;2.2.3.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+
+<h4 id="2）配置文件"><a href="#2）配置文件" class="headerlink" title="2）配置文件"></a>2）配置文件</h4><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">application:</span>
+    <span class="hljs-attr">name:</span> <span class="hljs-string">mycloud-provider</span>
+<span class="hljs-attr">eureka:</span>
+  <span class="hljs-attr">client:</span>
+    <span class="hljs-attr">service-url:</span>
+      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://localhost:8003/eureka/</span></code></pre>
+
+<h4 id="3）启动类-1"><a href="#3）启动类-1" class="headerlink" title="3）启动类"></a>3）启动类</h4><pre><code class="hljs java"><span class="hljs-meta">@SpringBootApplication</span>
+<span class="hljs-meta">@EnableEurekaClient</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CorpProvider8001</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        SpringApplication.run(CorpProvider8001<span class="hljs-class">.<span class="hljs-keyword">class</span>, <span class="hljs-title">args</span>)</span>;
+    &#125;
+&#125;</code></pre>
+
+<blockquote>
+<p>如果不想用主机名作为自定义注册中心的地址，也可以使用IP的形式。在配置文件中配置eureka.instance.prefer-ip-address=true，改值默认为false。</p>
+</blockquote>
+<h3 id="三、高可用集群配置方式"><a href="#三、高可用集群配置方式" class="headerlink" title="三、高可用集群配置方式"></a>三、高可用集群配置方式</h3><p>eureka server的高可用实际上就是将自己作为服务向其他注册中心注册自己。</p>
+<h4 id="1）创建server1"><a href="#1）创建server1" class="headerlink" title="1）创建server1"></a>1）创建server1</h4><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">application:</span>
+    <span class="hljs-attr">name:</span> <span class="hljs-string">eureka-server</span>
+<span class="hljs-attr">server:</span>
+  <span class="hljs-attr">port:</span> <span class="hljs-number">8003</span>
+
+<span class="hljs-attr">eureka:</span>
+  <span class="hljs-attr">instance:</span>
+    <span class="hljs-attr">hostname:</span> <span class="hljs-string">server-1</span>
+  <span class="hljs-attr">client:</span>
+    <span class="hljs-attr">service-url:</span>
+      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://server-2:8004/eureka/</span></code></pre>
+
+<h4 id="2-创建server2"><a href="#2-创建server2" class="headerlink" title="2) 创建server2"></a>2) 创建server2</h4><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">application:</span>
+    <span class="hljs-attr">name:</span> <span class="hljs-string">eureka-server</span>
+<span class="hljs-attr">server:</span>
+  <span class="hljs-attr">port:</span> <span class="hljs-number">8004</span>
+
+<span class="hljs-attr">eureka:</span>
+  <span class="hljs-attr">instance:</span>
+    <span class="hljs-attr">hostname:</span> <span class="hljs-string">server-2</span>
+  <span class="hljs-attr">client:</span>
+    <span class="hljs-attr">service-url:</span>
+      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://server-1:8003/eureka/</span></code></pre>
+
+<h4 id="3）客户端配置"><a href="#3）客户端配置" class="headerlink" title="3）客户端配置"></a>3）客户端配置</h4><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span>
+  <span class="hljs-attr">application:</span>
+    <span class="hljs-attr">name:</span> <span class="hljs-string">client</span>
+<span class="hljs-attr">eureka:</span>
+  <span class="hljs-attr">client:</span>
+    <span class="hljs-attr">service-url:</span>
+      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://server-1:8003/eureka/,http://server-2:8004/eureka/</span> <span class="hljs-comment"># 分别向两个服务端注入</span></code></pre>
+
+<h2 id="四、基础架构"><a href="#四、基础架构" class="headerlink" title="四、基础架构"></a>四、基础架构</h2><p>服务治理的3个核心要素：服务提供者、服务消费者、服务注册中心。</p>
+<blockquote>
+<p>很多时候，客户端既是服务提供者又是服务消费者</p>
+</blockquote>
+<h4 id="1）服务提供者"><a href="#1）服务提供者" class="headerlink" title="1）服务提供者"></a>1）服务提供者</h4><p><strong>服务注册：</strong></p>
+<p>服务提供者在启动的时候，通过rest请求将自己注册到eureka server，同时附带一些元数据信息。eureka server将它储存在一个双层map中，第一层key是服务名，第二层key是实例名。</p>
+<blockquote>
+<p>在服务注册时，需确认一下eureka.client.register-with-eureka=true参数是否正确。改值默认为true，若设置为false将不会注册。</p>
+</blockquote>
+<p><strong>服务同步：</strong></p>
+<p>服务提供者的服务信息可以通过注册中心集群中任意一个获取到。</p>
+<p><strong>服务续约renew</strong></p>
+<p>服务提供者维持一个心跳用来持续告诉eureka server，防止被server从服务列表清除。</p>
+<pre><code class="hljs yaml"><span class="hljs-comment"># 续约任务的调用隔离时间，默认30s</span>
+<span class="hljs-string">eureka.instance.lease-renewal-interval-in-seconds=30</span>
+<span class="hljs-comment"># 服务失效时间，默认90s</span>
+<span class="hljs-string">eureka.instance.lease-expiration-duration-in-seconds=30</span></code></pre>
+
+<h4 id="2）服务消费者"><a href="#2）服务消费者" class="headerlink" title="2）服务消费者"></a>2）服务消费者</h4><p><strong>获取服务：</strong></p>
+<p>客户端通过rest请求，访问获取服务列表，eureka server会维护一份只读的服务清单返回给客户端</p>
+<pre><code class="hljs yaml"><span class="hljs-comment"># 是否需要获取服务列表，默认为true，客户端需要开启</span>
+<span class="hljs-string">eureka.client.fetch-registry=true</span>
+<span class="hljs-comment"># 缓存清单的更新时间，默认30s</span>
+<span class="hljs-string">eureka.client.registry-fetch-interval-seconds=30</span></code></pre>
+
+<p><strong>服务调用：</strong></p>
+<p>服务消费者在获取到服务清单到，通过服务名根据一定的策略选择一个服务实例进行调用。</p>
+<p><strong>服务下线：</strong></p>
+<p>客户端正常关闭时，会触发一个rest请求给server，server接收到该请求后，将该服务状态置为下线DOWN，并把该下线事件传播出去。</p>
+<h4 id="3）服务注册中心"><a href="#3）服务注册中心" class="headerlink" title="3）服务注册中心"></a>3）服务注册中心</h4><p><strong>失效剔除：</strong></p>
+<p>server在启动的时候会创建一个定时任务，默认每隔60s将服务清单中超时（默认90s）没有续约的服务剔除。</p>
+<p><strong>自我保护：</strong></p>
+<p>默认在15分钟内，若心跳失败的比例低于85%，server会将当前的服务实例清单保护起来，让这些实例不会过期。但是假设保护期内服务异常，客户端拿到失效的实例，就会出现调用失败的情况，所以客户端需要有容错机制。如请求重试、断路器机制。</p>
+<pre><code class="hljs ini"><span class="hljs-comment"># 关闭保护机制</span>
+<span class="hljs-attr">eureka.server.enable-self-preservation</span>=<span class="hljs-literal">false</span></code></pre>
+
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/blog/categories/springCloud/">springCloud</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/blog/tags/eureka/">eureka</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/blog/2020/06/07/%E3%80%90%E5%B9%B6%E5%8F%91%E3%80%913%E5%A4%A7JUC%E5%B7%A5%E5%85%B7%E7%B1%BB/">
+                        <span class="hidden-mobile">【并发】3大JUC工具类</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'http://yoursite.com/2020/06/07/eureka使用/';
+        this.page.identifier = '/2020/06/07/eureka使用/';
+      };
+      var oldLoadDq = window.onload;
+      window.onload = function () {
+        oldLoadDq && oldLoadDq();
+
+        var d = document, s = d.createElement('script');
+        s.type = 'text/javascript';
+        s.src = '//' + 'orange' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+      };
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" target="_blank" rel="nofollow noopener noopener">comments
+        powered by Disqus.</a></noscript>
+  </div>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/blog/js/debouncer.js" ></script>
+<script  src="/blog/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/blog/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/blog/js/clipboard-use.js" ></script>
+
+
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "eureka使用&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/blog/js/local-search.js" ></script>
+  <script>
+    var path = "/blog/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

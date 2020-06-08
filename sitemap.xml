@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2020/06/08/RestTemplate%E4%BD%BF%E7%94%A8/</loc>
+    
+    <lastmod>2020-06-08T13:57:05.423Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2020/06/08/ribbon%E4%BD%BF%E7%94%A8/</loc>
+    
+    <lastmod>2020-06-08T13:16:10.470Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2020/06/07/eureka%E4%BD%BF%E7%94%A8/</loc>
     
     <lastmod>2020-06-07T15:21:48.462Z</lastmod>

@@ -168,6 +168,111 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/blog/2020/06/08/RestTemplate%E4%BD%BF%E7%94%A8/" target="_self">
+          <img src="/blog/img/index_img.png" srcset="/blog/img/loading.gif" alt="RestTemplate使用">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a class="index-header" href="/blog/2020/06/08/RestTemplate%E4%BD%BF%E7%94%A8/">RestTemplate使用</a>
+
+      <a href="/blog/2020/06/08/RestTemplate%E4%BD%BF%E7%94%A8/" class="index-excerpt">
+        
+        
+          
+        
+        <div>restTemplate详解
+该对象会使用ribbon的自动化配置，同时通过@LoadBalanced注解修饰还能开启客户端负载均衡
+
+一、GET请求1.1 getForEntity
+该方法返回的是ResponseEntity，是spring对HTTP响应的封装。
+
+
+主要存储了HTTP的几个重要元素，如HttpStatus状态码。在HttpEntity中还存储着HttpHeaders以及范型类型</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-08
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/blog/categories/springCloud/">springCloud</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/blog/tags/restTemplate/">restTemplate</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/blog/2020/06/08/ribbon%E4%BD%BF%E7%94%A8/" target="_self">
+          <img src="/blog/img/index_img.png" srcset="/blog/img/loading.gif" alt="ribbon使用">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a class="index-header" href="/blog/2020/06/08/ribbon%E4%BD%BF%E7%94%A8/">ribbon使用</a>
+
+      <a href="/blog/2020/06/08/ribbon%E4%BD%BF%E7%94%A8/" class="index-excerpt">
+        
+        
+          
+        
+        <div>一、什么是ribbon
+Spring cloud ribbon是一个基于HTTP和TCP的客户端负载均衡工具，它基于netflix ribbon实现。
+将面向服务的rest模版请求自动转换成客户端负载均衡的服务调用。
+是一个工具类框架，例如API网关的请求转发、Feign的底层都是基于ribbon的。
+
+二、客户端负载均衡1、基础理论
+负载均衡是系统高可用、缓解网络压力、处理能力扩容的重要手段之一</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-08
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/blog/categories/springCloud/">springCloud</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/blog/tags/ribbon/">ribbon</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
         <a href="/blog/2020/06/07/eureka%E4%BD%BF%E7%94%A8/" target="_self">
           <img src="/blog/img/index_img.png" srcset="/blog/img/loading.gif" alt="eureka使用">
         </a>
@@ -597,112 +702,6 @@ Maven方式生成
             <i class="iconfont icon-tags"></i>
             
               <a href="/blog/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">性能优化</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/blog/2020/05/31/%E6%9C%8D%E5%8A%A1%E7%86%94%E6%96%AD/" target="_self">
-          <img src="/blog/img/index_img.png" srcset="/blog/img/loading.gif" alt="服务熔断">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/blog/2020/05/31/%E6%9C%8D%E5%8A%A1%E7%86%94%E6%96%AD/">服务熔断</a>
-
-      <a href="/blog/2020/05/31/%E6%9C%8D%E5%8A%A1%E7%86%94%E6%96%AD/" class="index-excerpt">
-        
-        
-          
-        
-        <div>服务熔断
-hystrix，是一个用于处理分布式系统延迟和容错的库，它能够保证在一个子服务出问题的情况下，不会导致整体服务失败，避免级联雪崩，以提高分布式系统的弹性。
-“断路器”本身是一个开关装置，当某个服务单元发生故障后，向调用方返回一个服务预期的、可处理的备选响应，而不是长时间等待或者抛出一个服务端无法处理的异常。这样就保证了调用方线程不会被长时间占用，从而避免故障在分布式系统中蔓延，甚至雪崩。</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-05-31
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/blog/categories/java/">java</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/blog/tags/springCloud-hystrix/">springCloud hystrix</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/blog/2020/05/31/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" target="_self">
-          <img src="/blog/img/index_img.png" srcset="/blog/img/loading.gif" alt="负载均衡">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/blog/2020/05/31/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/">负载均衡</a>
-
-      <a href="/blog/2020/05/31/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" class="index-excerpt">
-        
-        
-          
-        
-        <div>负载均衡
-LB（load balance）：简单的说就是将用户请求平摊分配到多个服务器上，从而达到系统的高可用。
-
-常见的负载均衡软件有nginx、lvx
-
-常见分类
-
-集中式LB：在服务的消费方和服务方使用独立的Lb方式，如nginx，由它负责请求转发。
-进程式LB：将LB逻辑集成到消费方，消费方从注册中心获取可用的服务，再从这里面选一个进行访问，如ribbon。
-
-
-
-ribbon 负载均衡/</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-05-31
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/blog/categories/java/">java</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/blog/tags/springCloud-ribbon/">springCloud ribbon</a>
             
           </div>
         

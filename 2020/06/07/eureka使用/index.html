@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.4k 字
+      1.6k 字
     </span>
   
 
@@ -173,7 +173,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      17
+      20
        分钟
     </span>
   
@@ -243,7 +243,7 @@
     <span class="hljs-attr">fetch-registry:</span> <span class="hljs-literal">false</span> <span class="hljs-comment"># 服务端本身就是维护服务实例的，所以并不需要去检索服务，默认true，server应设置为false</span></code></pre>
 
 <h4 id="3）启动类"><a href="#3）启动类" class="headerlink" title="3）启动类:"></a>3）启动类:</h4><pre><code class="hljs java"><span class="hljs-meta">@SpringBootApplication</span>
-<span class="hljs-meta">@EnableEurekaServer</span>
+<span class="hljs-meta">@EnableEurekaServer</span> <span class="hljs-comment">//开启Eureka服务端，接受其它微服务注册进来</span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EurekaServer8003</span> </span>&#123;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
         SpringApplication.run(EurekaServer8003<span class="hljs-class">.<span class="hljs-keyword">class</span>, <span class="hljs-title">args</span>)</span>;
@@ -258,14 +258,19 @@
 
 <h4 id="2）配置文件"><a href="#2）配置文件" class="headerlink" title="2）配置文件"></a>2）配置文件</h4><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span>
   <span class="hljs-attr">application:</span>
-    <span class="hljs-attr">name:</span> <span class="hljs-string">mycloud-provider</span>
+    <span class="hljs-attr">name:</span> <span class="hljs-string">mycloud-provider</span> <span class="hljs-comment"># eureka页面 application显示的名称。EurekaServer中服务名默认转成大写的。</span>
 <span class="hljs-attr">eureka:</span>
   <span class="hljs-attr">client:</span>
     <span class="hljs-attr">service-url:</span>
-      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://localhost:8003/eureka/</span></code></pre>
+      <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://localhost:8003/eureka/</span>
+  <span class="hljs-attr">instance:</span>
+    <span class="hljs-attr">instance-id:</span> <span class="hljs-string">$&#123;spring.application.name&#125;:$&#123;server.port&#125;</span> <span class="hljs-comment"># eureka页面status显示的内容</span></code></pre>
 
 <h4 id="3）启动类-1"><a href="#3）启动类-1" class="headerlink" title="3）启动类"></a>3）启动类</h4><pre><code class="hljs java"><span class="hljs-meta">@SpringBootApplication</span>
-<span class="hljs-meta">@EnableEurekaClient</span>
+<span class="hljs-comment">// 可不加该配置，Dalston之后的版本中（不含Dalston），只要开启了springboot的自动配置，服务注册发现功能就会启用</span>
+<span class="hljs-comment">// 使用配置项`spring.cloud.service-registry.auto-registration.enabled=false`即可禁止服务注册发现功能。</span>
+<span class="hljs-comment">// eureka.client.register-with-eureka: false 也可禁止服务注册功能。</span>
+<span class="hljs-comment">// @EnableEurekaClient </span>
 <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CorpProvider8001</span> </span>&#123;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
         SpringApplication.run(CorpProvider8001<span class="hljs-class">.<span class="hljs-keyword">class</span>, <span class="hljs-title">args</span>)</span>;
@@ -275,7 +280,18 @@
 <blockquote>
 <p>如果不想用主机名作为自定义注册中心的地址，也可以使用IP的形式。在配置文件中配置eureka.instance.prefer-ip-address=true，改值默认为false。</p>
 </blockquote>
-<h3 id="三、高可用集群配置方式"><a href="#三、高可用集群配置方式" class="headerlink" title="三、高可用集群配置方式"></a>三、高可用集群配置方式</h3><p>eureka server的高可用实际上就是将自己作为服务向其他注册中心注册自己。</p>
+<h3 id="三、info信息完善"><a href="#三、info信息完善" class="headerlink" title="三、info信息完善"></a>三、info信息完善</h3><h4 id="1）引入依赖"><a href="#1）引入依赖" class="headerlink" title="1）引入依赖"></a>1）引入依赖</h4><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+	<span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+	<span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-actuator<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre>
+
+<h4 id="2）yml中配置"><a href="#2）yml中配置" class="headerlink" title="2）yml中配置"></a>2）yml中配置</h4><pre><code class="hljs yaml"><span class="hljs-attr">info:</span> <span class="hljs-comment"># eureka页面status点击跳转监控页面 显示的内容</span>
+  <span class="hljs-attr">app.name:</span> <span class="hljs-string">$&#123;spring.application.name&#125;</span>
+  <span class="hljs-attr">company.name:</span> <span class="hljs-string">www.orange.com</span>
+  <span class="hljs-attr">build.artifactId:</span> <span class="hljs-string">mycloud-provider</span>
+  <span class="hljs-attr">build.version:</span> <span class="hljs-number">1.0</span></code></pre>
+
+<h3 id="四、高可用集群配置方式"><a href="#四、高可用集群配置方式" class="headerlink" title="四、高可用集群配置方式"></a>四、高可用集群配置方式</h3><p>eureka server的高可用实际上就是将自己作为服务向其他注册中心注册自己。</p>
 <h4 id="1）创建server1"><a href="#1）创建server1" class="headerlink" title="1）创建server1"></a>1）创建server1</h4><pre><code class="hljs yaml"><span class="hljs-attr">spring:</span>
   <span class="hljs-attr">application:</span>
     <span class="hljs-attr">name:</span> <span class="hljs-string">eureka-server</span>
@@ -310,7 +326,7 @@
     <span class="hljs-attr">service-url:</span>
       <span class="hljs-attr">defaultZone:</span> <span class="hljs-string">http://server-1:8003/eureka/,http://server-2:8004/eureka/</span> <span class="hljs-comment"># 分别向两个服务端注入</span></code></pre>
 
-<h2 id="四、基础架构"><a href="#四、基础架构" class="headerlink" title="四、基础架构"></a>四、基础架构</h2><p>服务治理的3个核心要素：服务提供者、服务消费者、服务注册中心。</p>
+<h3 id="五、基础架构"><a href="#五、基础架构" class="headerlink" title="五、基础架构"></a>五、基础架构</h3><p>服务治理的3个核心要素：服务提供者、服务消费者、服务注册中心。</p>
 <blockquote>
 <p>很多时候，客户端既是服务提供者又是服务消费者</p>
 </blockquote>

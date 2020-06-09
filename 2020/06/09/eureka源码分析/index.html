@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="foreverorange">
   <meta name="keywords" content="">
-  <title>eureka对比zookeeper - foreverorange</title>
+  <title>eureka源码分析 - foreverorange</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -152,8 +152,8 @@
               
   <div class="mt-3 post-meta">
     <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-    <time datetime="2020-05-31 21:09">
-      2020年5月31日 晚上
+    <time datetime="2020-06-09 20:50">
+      2020年6月9日 晚上
     </time>
   </div>
 
@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2k 字
+      882 字
     </span>
   
 
@@ -173,7 +173,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      21
+      10
        分钟
     </span>
   
@@ -204,79 +204,62 @@
           <div class="post-content mx-auto" id="post">
             
             <article class="markdown-body">
-              <h1 id="cap原则"><a href="#cap原则" class="headerlink" title="cap原则"></a>cap原则</h1><h2 id="一、回顾"><a href="#一、回顾" class="headerlink" title="一、回顾"></a>一、回顾</h2><ul>
-<li><p>ACID 原则</p>
-<ul>
-<li>关系数据库管理系统（Relational Database Management System：<em>RDBMS</em>），如mysql、oracle、sqlserver</li>
-<li>A（atomicity）原子性</li>
-<li>C（consistency）一致性</li>
-<li>I（Isolation）隔离性</li>
-<li>D（durability）持久性</li>
-</ul>
-</li>
-<li><p>CAP原则</p>
-<ul>
-<li><p>一般用于redis、mongdb</p>
-</li>
-<li><p>C（consistency）一致性：</p>
-<p>分布式环境下，一致性主要指数据在多个副本之间是否一致，（等同于所有节点访问同一份最新的数据副本）。</p>
-<p>通过某个节点的写操作结果对后面通过其他节点的读操作可见，如果数据更新后并发访问情况下可立即感知其更新， 称为强一致性，如果允许之后部分或者全部感知不到该更新，称为弱一致性，若在之后一段时间后，一定可以感知该更新，称为最终一致性。</p>
-</li>
-<li><p>A（avaibility）可用性：</p>
-<p>在集群中一部分节点故障后，集群整体是否还能响应客户端的读写请求。（对数据更新具备高可用性）</p>
-</li>
-<li><p>P（partition tolerance）分区容错性：</p>
-<p>集群出现网络割裂时，集群还能继续提供一定的可用性和一致性，除非整个网络不可用，也即部分节点宕机或者无法与其他节点通信时，各分区间还可保持分布式系统的功能。</p>
-</li>
-</ul>
-</li>
-</ul>
-<p><strong>著名的CAP理论指出，一个分布式系统不可能同时满足C(一致性)、A(可用性)和P(分区容错性)。由于分区容错性在是分布式系统中必须要保证的，因此我们只能在A和C之间进行权衡。zookeeper保证的是CP， 而eureka则是AP。</strong></p>
-<ul>
-<li><p>BASE理论</p>
-<ul>
-<li><p>BASE是Basically Available（基本可用）、Soft state（软状态）和Eventually consistent（最终一致性）三个短语的简写，BASE是对CAP中一致性和可用性权衡的结果，其来源于对大规模互联网系统分布式实践的结论，是基于CAP定理逐步演化而来的，其核心思想是即使无法做到强一致性（Strong consistency），但每个应用都可以根据自身的业务特点，采用适当的方式来使系统达到最终一致性（Eventual consistency）。</p>
-</li>
-<li><p>BASE之基本可用体现在两个方面： 1、响应时间上的损失：比如某些请求1秒内给出响应，有些请求可能会在5秒内给出响应 2、功能上的损失：例如对于电商系统来说，某些区域可能不能购买某些商品，又或者大促时，部分消费者被引流到降级页面。</p>
-</li>
-<li><p>BASE之弱状态： 也称为软状态，是指允许系统中的数据存在中间状态，并认为该状态不会影响系统的整体可用性，即允许系统在不同节点的数据副本之间存在一定的延时。</p>
-</li>
-<li><p>BASE之最终一致性： 系统中的数据副本在经过一段时间同步后，组中能够达到一个一致的状态。</p>
-</li>
-</ul>
-</li>
-</ul>
-<h2 id="二、集群环境下如何保障数据一致性"><a href="#二、集群环境下如何保障数据一致性" class="headerlink" title="二、集群环境下如何保障数据一致性"></a>二、集群环境下如何保障数据一致性</h2><p>集群环境下有三种方式保障数据一致性：数据复制、WNR和集中存储。</p>
-<p>1、数据复制：先向单节点写入，再复制到其他节点，zookeeper是这样实现的。或者多节点同时写入，但只适合多节点写入的数据不是相同数据的应用场景。在master-slave场景中， 同步复制（slave从master全部复制完成才给客户端返回写入成功）可保证强一致性，但会影响可用性；异步复制（数据写入master就返回写入成功，不需要等到slave复制完成， 之后master通过push向slave推送数据或者slave通过ull方式从master拉数据）可提供可用性但会降低一致性。</p>
-<p>2、WNR：N代表总副本数，W代表每次写操作要保证的最少写成功的副本数，R代表每次读操作最少读取的副本数，当W+R&gt;N时，可保证每次读取的数据至少有一个副本具有最新的更新 （例如可以通过版本号或者时间戳判断是哪个副本的数据是最新的），多个写操作的顺序难以保证，可能导致多副本的写操作顺序不一致，Dynamo通过箱量时钟在保证最终一致性。</p>
-<p>3、集中存储：借助可靠性较高的集中存储，比如NAS存储，分布式缓存（Redis）等。</p>
-<h2 id="二、zookeeper保证的是CP"><a href="#二、zookeeper保证的是CP" class="headerlink" title="二、zookeeper保证的是CP"></a>二、zookeeper保证的是CP</h2><ul>
-<li>放弃可用性，并不是完全没有可用性，是指允许响应超时的时间可以更长，比如报表可以运行10分钟左右，甚至在某些情况下允许超时。</li>
-<li>Zookeeper会出现这样一种情况，当master节点因为网络故障与其他节点失去联系时，剩余节点会重新进行leader选举。问题在于，选举leader的时间太长，30 ~ 120s, 且选举期间整个Zookeeper集群都是不可用的，这就导致在选举期间注册服务瘫痪。在云部署的环境下，因网络问题使得Zookeeper集群失去master节点是较大概率会发生的事，虽然服务能够最终恢复，但是漫长的选举时间导致的注册长期不可用是不能容忍的。</li>
-</ul>
-<p><strong>zk集群：</strong></p>
-<p>1、zk集群是一种对等集群，所有节点（机器）数据都一样。</p>
-<p>2、集群节点之间靠心跳感知彼此的存在。 </p>
-<p>3、所有写操作都在主节点，其他节点只能读，虽然也可以接收写请求，但是内部会把写操作转给主节点。 </p>
-<p>4、通过选举机制选出主节点，从而保障了主节点的高可用，这样主节点就不是固定的，万一主节点宕机还可以重新选举出主节点。 </p>
-<p>5、至少需要三个节点，而且节点个数必须是奇数。 </p>
-<p>6、当一半以上的数据写入成功后，则返回写入成功，是最终一致性策略。</p>
-<h2 id="三、eureka保证的是AP"><a href="#三、eureka保证的是AP" class="headerlink" title="三、eureka保证的是AP"></a>三、eureka保证的是AP</h2><ul>
-<li><p>放弃一致性是放弃数据的强一致性，而保留数据的最终一致性，即数据最终是完全一致的，但有一个时间窗口的问题，这需要根据不同的业务来定义。</p>
-</li>
-<li><p>当向注册中心查询服务列表时，我们可以容忍注册中心返回的是几分钟以前的注册信息，但不能接受服务直接down掉不可用。也就是说，服务注册功能对可用性的要求要高于一致性。</p>
-</li>
-<li><p>Eureka在设计时就优先保证可用性。Eureka各个节点都是平等的，几个节点挂掉不会影响正常节点的工作，剩余的节点依然可以提供注册和查询服务。而Eureka的客户端在向某个Eureka注册或时如果发现连接失败，则会自动切换至其它节点，只要有一台Eureka还在，就能保证注册服务可用(保证可用性)，只不过查到的信息可能不是最新的(不保证强一致性)。</p>
-</li>
-<li><p>除此之外，Eureka还有一种自我保护机制，如果在15分钟内超过85%的节点都没有正常的心跳，那么Eureka就认为客户端与注册中心出现了网络故障，此时会出现以下几种情况：</p>
+              <h2 id="一、EnableDiscoveryClient与EnableEurekaClient的区别"><a href="#一、EnableDiscoveryClient与EnableEurekaClient的区别" class="headerlink" title="一、EnableDiscoveryClient与EnableEurekaClient的区别"></a>一、EnableDiscoveryClient与EnableEurekaClient的区别</h2><p>Spring Cloud版本：Angle -&gt; Brixton -&gt; Camden -&gt; Dalston -&gt; Edgware -&gt; Finchley-&gt;Greenwich-&gt;Hoxton</p>
+<blockquote>
 <ol>
-<li>Eureka不再从注册列表中移除因为长时间没收到心跳而应该过期的服务。</li>
-<li>Eureka仍然能够接受新服务的注册和查询请求，但是不会被同步到其它节点上(即保证当前节点依然可用) 。</li>
-<li>当网络稳定时，当前实例新的注册信息会被同步到其它节点中。因此， Eureka可以很好的应对因网络故障导致部分节点失去联系的情况，而不会像zookeeper那样使整个注册服务瘫痪。</li>
+<li>Dalston或更早期的版本,为了启用服务注册发现功能。需要在主启动类上增加<code>@EnableDiscoveryClient</code>或者<code>@EnableEurekaClient</code>注解。</li>
+<li><code>@EnableEurekaClient</code>内部使用了<code>@EnableDiscoveryClient</code>注解，因此如果要使用eureka的注册发现服务，两者功能是一样的。</li>
+<li>EnableDiscoveryClient注解在spring.factories配置中通过配置项EurekaDiscoveryClientConfiguration来开启服务注册发现功能。</li>
 </ol>
+</blockquote>
+<ul>
+<li>@EnableDiscoveryClient注解是基于spring-cloud-commons依赖，并且在classpath中实现。</li>
+<li>@EnableEurekaClient注解是基于spring-cloud-netflix依赖，只能为eureka作用。</li>
+<li>@EnableEurekaClient只适用于Eureka作为注册中心，@EnableDiscoveryClient 可以是其他注册中心。</li>
+</ul>
+<h2 id="二、-EnableDiscoveryClient注解现在也没用了（Dalston之后的版本中（不含Dalston））"><a href="#二、-EnableDiscoveryClient注解现在也没用了（Dalston之后的版本中（不含Dalston））" class="headerlink" title="二、 @EnableDiscoveryClient注解现在也没用了（Dalston之后的版本中（不含Dalston））"></a>二、 @EnableDiscoveryClient注解现在也没用了（Dalston之后的版本中（不含Dalston））</h2><p>只要依赖了以spring-cloud-starter-netflix为前缀的库(例如spring-cloud-starter-netflix-eureka-client)，就启用了服务注册发现功能。</p>
+<p>使用配置项<code>spring.cloud.service-registry.auto-registration.enabled=false</code>即可禁止服务注册发现功能。</p>
+<p>spring容器在查询spring.factories的过程中，如果找到了EnableDiscoveryClient的配置，就会实例化该配置对应的服务注册发现：例如eureka、consul、zookeeper等。</p>
+<p>打开工程spring-cloud-netflix-eureka-client.jar，去看src\main\resources\META-INF目录下的spring.factories文件，发现在springboot的自动配置项中，出现了一个关键配置EurekaDiscoveryClientConfiguration，如下：</p>
+<pre><code class="hljs yaml"><span class="hljs-string">org.springframework.boot.autoconfigure.EnableAutoConfiguration=\</span>
+<span class="hljs-string">org.springframework.cloud.netflix.eureka.config.EurekaClientConfigServerAutoConfiguration,\</span>
+<span class="hljs-string">org.springframework.cloud.netflix.eureka.config.DiscoveryClientOptionalArgsConfiguration,\</span>
+<span class="hljs-string">org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration,\</span>
+<span class="hljs-string">org.springframework.cloud.netflix.ribbon.eureka.RibbonEurekaAutoConfiguration,\</span>
+<span class="hljs-string">org.springframework.cloud.netflix.eureka.EurekaDiscoveryClientConfiguration,\</span>
+<span class="hljs-string">org.springframework.cloud.netflix.eureka.reactive.EurekaReactiveDiscoveryClientConfiguration,\</span>
+<span class="hljs-string">org.springframework.cloud.netflix.eureka.loadbalancer.LoadBalancerEurekaAutoConfiguration</span>
+
+<span class="hljs-string">org.springframework.cloud.bootstrap.BootstrapConfiguration=\</span>
+<span class="hljs-string">org.springframework.cloud.netflix.eureka.config.EurekaConfigServerBootstrapConfiguration</span></code></pre>
+
+<blockquote>
+<ol>
+<li><p>在spring.factories配置中，配置类EurekaDiscoveryClientConfiguration被配置到springboot的自动配置注解中，与EnableDiscoveryClient注解没有关系了,也就是说只要开启了springboot的自动配置，服务注册发现功能就会启用。</p>
+</li>
+<li><p>EnableEurekaClient源码中没有使用注解EnableDiscoveryClient，此时EnableEurekaClient已经没用了。</p>
+</li>
+</ol>
+</blockquote>
+<h2 id="三、Eureka两个组件：Eureka-Server和Eureka-Client。"><a href="#三、Eureka两个组件：Eureka-Server和Eureka-Client。" class="headerlink" title="三、Eureka两个组件：Eureka Server和Eureka Client。"></a>三、Eureka两个组件：Eureka Server和Eureka Client。</h2><p><strong>Eureka Server</strong></p>
+<ul>
+<li>Eureka Server 提供服务发现能力，各个微服务启动时，会向Eureka Server注册自己的信息（例如IP、端口、微服务名称等），Eureka Server会存储这些信息。</li>
+<li>Eureka Server作为一个独立的部署单元，以REST API的形式为服务实例提供了注册、管理和查询等操作。同时，Eureka Server也为我们提供了可视化的监控页面，可以直观地看到各个Eureka Server当前的运行状态和所有已注册服务的情况。</li>
+</ul>
+<p><strong>Eureka Client</strong></p>
+<ul>
+<li><p>Erueka Client是一个java客户端，用于简化与Eureka的交互。</p>
+</li>
+<li><p>微服务启动后，会周期性（默认30s）地向Eureka Server发送心跳以续约自己的“ 租期 ”。</p>
+</li>
+<li><p>如果Eureka server在一定的时间内没有接收到某个微服务实例的心跳，Eureka Server将注销该实例（默认90s）。</p>
+</li>
+<li><p>默认情况下，Eureka Server同时也是Eureka Client。 多个Eureka Server 实例互相之间通过复制的方式来实现服务注册表中数据的同步。</p>
+</li>
+<li><p>Eureka Client 会缓存服务注册表中的信息，这种方式有一定的优势——首先，无须每次请求都查询Eureka Server，从而降低了Eureka Server的压力；其次，即使Eureka Server所有节点都宕掉，服务消费者依然可以使用缓存中的信息找到服务提供者并完成调用。 综上，Eureka通过心跳检查、客户端缓存等机制，提高了系统的灵活性、可伸缩性和可用性。</p>
 </li>
 </ul>
-
+<h2 id="四、未完待续"><a href="#四、未完待续" class="headerlink" title="四、未完待续"></a>四、未完待续</h2>
             </article>
             <hr>
             <div>
@@ -293,7 +276,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/blog/tags/eureka-zookeeper/">eureka zookeeper</a>
+                      <a class="hover-with-bg" href="/blog/tags/eureka/">eureka</a>
                     
                   </div>
                 
@@ -306,18 +289,12 @@
                   <div class="post-prev col-6">
                     
                     
-                      <a href="/blog/2020/05/31/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">负载均衡</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </div>
                   <div class="post-next col-6">
                     
                     
-                      <a href="/blog/2020/05/31/java8%E6%96%B9%E6%B3%95%E5%BC%95%E7%94%A8%E7%90%86%E8%A7%A3/">
-                        <span class="hidden-mobile">java8方法引用理解</span>
+                      <a href="/blog/2020/06/08/RestTemplate%E4%BD%BF%E7%94%A8/">
+                        <span class="hidden-mobile">RestTemplate使用</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -336,8 +313,8 @@
     <div id="disqus_thread"></div>
     <script type="text/javascript">
       var disqus_config = function () {
-        this.page.url = 'http://yoursite.com/2020/05/31/eureka对比zookeeper/';
-        this.page.identifier = '/2020/05/31/eureka对比zookeeper/';
+        this.page.url = 'http://yoursite.com/2020/06/09/eureka源码分析/';
+        this.page.identifier = '/2020/06/09/eureka源码分析/';
       };
       var oldLoadDq = window.onload;
       window.onload = function () {
@@ -485,7 +462,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "eureka对比zookeeper&nbsp;",
+        "eureka源码分析&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,

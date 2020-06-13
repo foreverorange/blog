@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/blog/img/favicon.png">
+  <link rel="icon" type="image/png" href="/blog/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="foreverorange">
+  <meta name="keywords" content="">
+  <title>eureka源码 - foreverorange</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/blog/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/blog/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/blog/atom.xml" title="foreverorange" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/blog/">&nbsp;<strong>扬帆！起航！！</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/blog/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-06-13 21:35">
+      2020年6月13日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.6k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      25
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <h2 id="一、两种方式禁用服务注册"><a href="#一、两种方式禁用服务注册" class="headerlink" title="一、两种方式禁用服务注册"></a>一、两种方式禁用服务注册</h2><h3 id="1、-EnableDiscoveryClient-autoRegister-false"><a href="#1、-EnableDiscoveryClient-autoRegister-false" class="headerlink" title="1、@EnableDiscoveryClient(autoRegister=false)"></a>1、@EnableDiscoveryClient(autoRegister=false)</h3><h3 id="2、spring-cloud-service-registry-auto-registration-enabled-false"><a href="#2、spring-cloud-service-registry-auto-registration-enabled-false" class="headerlink" title="2、spring.cloud.service-registry.auto-registration.enabled=false"></a>2、spring.cloud.service-registry.auto-registration.enabled=false</h3><pre><code class="hljs java"><span class="hljs-meta">@Import</span>(EnableDiscoveryClientImportSelector<span class="hljs-class">.<span class="hljs-keyword">class</span>)</span>
+<span class="hljs-class"><span class="hljs-title">public</span> @<span class="hljs-title">interface</span> <span class="hljs-title">EnableDiscoveryClient</span> </span>&#123;
+	<span class="hljs-comment">/**</span>
+<span class="hljs-comment">	 * If true, the ServiceRegistry will automatically register the local server.</span>
+<span class="hljs-comment">	 * <span class="hljs-doctag">@return</span> - &#123;<span class="hljs-doctag">@code</span> true&#125; if you want to automatically register.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-function"><span class="hljs-keyword">boolean</span> <span class="hljs-title">autoRegister</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">true</span></span>;
+&#125;</code></pre>
+
+<ul>
+<li>该配置项默认为true，但是可以主动声明去禁用</li>
+</ul>
+<p><strong><code>@Import(EnableDiscoveryClientImportSelector.class)</code></strong>的源码如下：</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Order</span>(Ordered.LOWEST_PRECEDENCE - <span class="hljs-number">100</span>)
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EnableDiscoveryClientImportSelector</span></span>
+<span class="hljs-class">		<span class="hljs-keyword">extends</span> <span class="hljs-title">SpringFactoryImportSelector</span>&lt;<span class="hljs-title">EnableDiscoveryClient</span>&gt; </span>&#123;
+
+	<span class="hljs-meta">@Override</span>
+	<span class="hljs-keyword">public</span> String[] selectImports(AnnotationMetadata metadata) &#123;
+    <span class="hljs-comment">// 父类loadFactoryNames方法，定义去加载了FACTORIES_RESOURCE_LOCATION = "META-INF/spring.factories";中所有的自动配置类</span>
+		String[] imports = <span class="hljs-keyword">super</span>.selectImports(metadata);
+
+		AnnotationAttributes attributes = AnnotationAttributes.fromMap(
+				metadata.getAnnotationAttributes(getAnnotationClass().getName(), <span class="hljs-keyword">true</span>));
+		<span class="hljs-comment">// 获取注解声明的autoRegister，从而调用实际处理</span>
+		<span class="hljs-keyword">boolean</span> autoRegister = attributes.getBoolean(<span class="hljs-string">"autoRegister"</span>);
+
+		<span class="hljs-keyword">if</span> (autoRegister) &#123;
+			List&lt;String&gt; importsList = <span class="hljs-keyword">new</span> ArrayList&lt;&gt;(Arrays.asList(imports));
+			importsList.add(
+					<span class="hljs-string">"org.springframework.cloud.client.serviceregistry.AutoServiceRegistrationConfiguration"</span>);
+			imports = importsList.toArray(<span class="hljs-keyword">new</span> String[<span class="hljs-number">0</span>]);
+		&#125;
+		<span class="hljs-keyword">else</span> &#123;
+			Environment env = getEnvironment();
+			<span class="hljs-keyword">if</span> (ConfigurableEnvironment<span class="hljs-class">.<span class="hljs-keyword">class</span>.<span class="hljs-title">isInstance</span>(<span class="hljs-title">env</span>)) </span>&#123;
+				ConfigurableEnvironment configEnv = (ConfigurableEnvironment) env;
+				LinkedHashMap&lt;String, Object&gt; map = <span class="hljs-keyword">new</span> LinkedHashMap&lt;&gt;();
+        <span class="hljs-comment">// 从这里可以看出，其实还是通过这个方式处理的</span>
+				map.put(<span class="hljs-string">"spring.cloud.service-registry.auto-registration.enabled"</span>, <span class="hljs-keyword">false</span>);
+				MapPropertySource propertySource = <span class="hljs-keyword">new</span> MapPropertySource(
+						<span class="hljs-string">"springCloudDiscoveryClient"</span>, map);
+				configEnv.getPropertySources().addLast(propertySource);
+			&#125;
+
+		&#125;
+
+		<span class="hljs-keyword">return</span> imports;
+	&#125;</code></pre>
+
+<h2 id="二、springCloud对netflixEureka进行了封装"><a href="#二、springCloud对netflixEureka进行了封装" class="headerlink" title="二、springCloud对netflixEureka进行了封装"></a>二、springCloud对netflixEureka进行了封装</h2><p>打开<code>spring-cloud-starter-netflix-eureka-client.jar</code>，找到<code>META-INF/spring.factories</code>，内容如下：</p>
+<pre><code class="hljs yaml"><span class="hljs-string">org.springframework.boot.autoconfigure.EnableAutoConfiguration=\</span>
+<span class="hljs-string">org.springframework.cloud.netflix.eureka.config.EurekaClientConfigServerAutoConfiguration,\</span>
+<span class="hljs-string">org.springframework.cloud.netflix.eureka.config.DiscoveryClientOptionalArgsConfiguration,\</span>
+<span class="hljs-comment"># EurekaClient的自动配置类</span>
+<span class="hljs-string">org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration,\</span>
+<span class="hljs-string">org.springframework.cloud.netflix.ribbon.eureka.RibbonEurekaAutoConfiguration,\</span>
+<span class="hljs-comment"># EurekaDiscoveryClient的自动配置类，默认就扫描加载了</span>
+<span class="hljs-string">org.springframework.cloud.netflix.eureka.EurekaDiscoveryClientConfiguration,\</span>
+
+<span class="hljs-string">org.springframework.cloud.netflix.eureka.reactive.EurekaReactiveDiscoveryClientConfiguration,\</span>
+<span class="hljs-string">org.springframework.cloud.netflix.eureka.loadbalancer.LoadBalancerEurekaAutoConfiguration</span>
+
+<span class="hljs-string">org.springframework.cloud.bootstrap.BootstrapConfiguration=\</span>
+<span class="hljs-string">org.springframework.cloud.netflix.eureka.config.EurekaConfigServerBootstrapConfiguration</span></code></pre>
+
+<p>打开<code>EurekaDiscoveryClientConfiguration</code>，发现，其构造是注入了netflix的EurekaClient，其本身也是一层包装</p>
+<pre><code class="hljs java"><span class="hljs-keyword">import</span> com.netflix.discovery.EurekaClient;
+<span class="hljs-keyword">import</span> com.netflix.discovery.EurekaClientConfig;
+
+<span class="hljs-meta">@Bean</span>
+<span class="hljs-meta">@ConditionalOnMissingBean</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> EurekaDiscoveryClient <span class="hljs-title">discoveryClient</span><span class="hljs-params">(EurekaClient client,</span></span>
+<span class="hljs-function"><span class="hljs-params">                                             EurekaClientConfig clientConfig)</span> </span>&#123;
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> EurekaDiscoveryClient(client, clientConfig);
+&#125;</code></pre>
+
+<p>点进去<code>EurekaClient</code>,其接口和实现类<code>DiscoveryClient</code></p>
+<pre><code class="hljs java"><span class="hljs-meta">@ImplementedBy</span>(DiscoveryClient<span class="hljs-class">.<span class="hljs-keyword">class</span>)</span>
+<span class="hljs-class"><span class="hljs-title">public</span> <span class="hljs-title">interface</span> <span class="hljs-title">EurekaClient</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">LookupService</span> </span>&#123;
+  ···
+&#125;</code></pre>
+
+<p>在<code>DiscoveryClient</code>的构造函数中进行了定时任务的初始化</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Inject</span>
+DiscoveryClient(ApplicationInfoManager applicationInfoManager, EurekaClientConfig config, AbstractDiscoveryClientOptionalArgs args,
+                Provider&lt;BackupRegistry&gt; backupRegistryProvider, EndpointRandomizer endpointRandomizer) &#123;
+···
+<span class="hljs-comment">// finally, init the schedule tasks (e.g. cluster resolvers, heartbeat, instanceInfo replicator, fetch</span>
+initScheduledTasks();
+···</code></pre>
+
+<h2 id="三、服务获取"><a href="#三、服务获取" class="headerlink" title="三、服务获取"></a>三、服务获取</h2><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Initializes all scheduled tasks.</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">initScheduledTasks</span><span class="hljs-params">()</span> </span>&#123;
+  <span class="hljs-comment">// 内部是EurekaClientConfigBean中的`eureka.client.fetch-registry=true`参数判断</span>
+    <span class="hljs-keyword">if</span> (clientConfig.shouldFetchRegistry()) &#123;
+        <span class="hljs-comment">// registry cache refresh timer</span>
+        <span class="hljs-keyword">int</span> registryFetchIntervalSeconds = clientConfig.getRegistryFetchIntervalSeconds();
+        <span class="hljs-keyword">int</span> expBackOffBound = clientConfig.getCacheRefreshExecutorExponentialBackOffBound();
+      <span class="hljs-comment">// 声明了一个定时任务</span>
+        cacheRefreshTask = <span class="hljs-keyword">new</span> TimedSupervisorTask(
+                <span class="hljs-string">"cacheRefresh"</span>,
+                scheduler,
+                cacheRefreshExecutor,
+                registryFetchIntervalSeconds,<span class="hljs-comment">//默认更新周期，30s</span>
+                TimeUnit.SECONDS,
+                expBackOffBound,
+                <span class="hljs-keyword">new</span> CacheRefreshThread()
+        );
+      
+        scheduler.schedule(
+                cacheRefreshTask,
+                registryFetchIntervalSeconds, TimeUnit.SECONDS);
+    &#125;
+····</code></pre>
+
+<ul>
+<li>服务获取的逻辑处理是一个单独的if</li>
+<li>其判断依据就是eureka.client.fetch-registry=true参数</li>
+</ul>
+<pre><code class="hljs java"><span class="hljs-meta">@ConfigurationProperties</span>(EurekaClientConfigBean.PREFIX)
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">EurekaClientConfigBean</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">EurekaClientConfig</span>, <span class="hljs-title">Ordered</span> </span>&#123;
+
+	<span class="hljs-comment">/**</span>
+<span class="hljs-comment">	 * Default prefix for Eureka client config properties.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String PREFIX = <span class="hljs-string">"eureka.client"</span>;
+	
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment">	 * Indicates whether this client should fetch eureka registry information from eureka</span>
+<span class="hljs-comment">	 * server.</span>
+<span class="hljs-comment">	 */</span>
+  <span class="hljs-keyword">private</span> <span class="hljs-keyword">boolean</span> fetchRegistry = <span class="hljs-keyword">true</span>;</code></pre>
+
+<h2 id="四、服务注册"><a href="#四、服务注册" class="headerlink" title="四、服务注册"></a>四、服务注册</h2><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * Initializes all scheduled tasks.</span>
+<span class="hljs-comment">     */</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">initScheduledTasks</span><span class="hljs-params">()</span> </span>&#123;
+  	···
+    <span class="hljs-keyword">if</span> (clientConfig.shouldRegisterWithEureka()) &#123;
+      ···
+      <span class="hljs-comment">// InstanceInfo replicator</span>
+      instanceInfoReplicator = <span class="hljs-keyword">new</span> InstanceInfoReplicator(
+        <span class="hljs-keyword">this</span>,
+        instanceInfo,
+        clientConfig.getInstanceInfoReplicationIntervalSeconds(),
+        <span class="hljs-number">2</span>); <span class="hljs-comment">// burstSize</span>
+      ···
+      instanceInfoReplicator.start(clientConfig.getInitialInstanceInfoReplicationIntervalSeconds());
+    &#125; <span class="hljs-keyword">else</span> &#123;
+      logger.info(<span class="hljs-string">"Not registering with Eureka server per configuration"</span>);
+    &#125;
+&#125;</code></pre>
+
+<ul>
+<li>创建了一个instanceInfoReplicator实例，start调用进行定时任务</li>
+</ul>
+<p>定时任务具体如下：</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>&#123;
+  <span class="hljs-keyword">try</span> &#123;
+    discoveryClient.refreshInstanceInfo();
+    Long dirtyTimestamp = instanceInfo.isDirtyWithTime();
+    <span class="hljs-keyword">if</span> (dirtyTimestamp != <span class="hljs-keyword">null</span>) &#123;
+      <span class="hljs-comment">// 真是出发调用注册的地方就在这里</span>
+      discoveryClient.register();
+     ···
+&#125;
+
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * Register with the eureka service by making the appropriate REST call.</span>
+<span class="hljs-comment">     */</span>
+<span class="hljs-function"><span class="hljs-keyword">boolean</span> <span class="hljs-title">register</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Throwable </span>&#123;
+  logger.info(PREFIX + <span class="hljs-string">"&#123;&#125;: registering service..."</span>, appPathIdentifier);
+  EurekaHttpResponse&lt;Void&gt; httpResponse;
+  <span class="hljs-keyword">try</span> &#123;
+    <span class="hljs-comment">// 注册也是通过rest请求，传入了一个instanceInfo对象</span>
+    httpResponse = eurekaTransport.registrationClient.register(instanceInfo);
+  &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+    logger.warn(PREFIX + <span class="hljs-string">"&#123;&#125; - registration failed &#123;&#125;"</span>, appPathIdentifier, e.getMessage(), e);
+    <span class="hljs-keyword">throw</span> e;
+  &#125;
+  <span class="hljs-keyword">if</span> (logger.isInfoEnabled()) &#123;
+    logger.info(PREFIX + <span class="hljs-string">"&#123;&#125; - registration status: &#123;&#125;"</span>, appPathIdentifier, httpResponse.getStatusCode());
+  &#125;
+  <span class="hljs-keyword">return</span> httpResponse.getStatusCode() == Status.NO_CONTENT.getStatusCode();
+&#125;</code></pre>
+
+<h2 id="五、服务续约"><a href="#五、服务续约" class="headerlink" title="五、服务续约"></a>五、服务续约</h2><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment"> * Initializes all scheduled tasks.</span>
+<span class="hljs-comment"> */</span>
+<span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title">initScheduledTasks</span><span class="hljs-params">()</span> </span>&#123;
+    ···
+    <span class="hljs-keyword">if</span> (clientConfig.shouldRegisterWithEureka()) &#123;
+        <span class="hljs-keyword">int</span> renewalIntervalInSecs = instanceInfo.getLeaseInfo().getRenewalIntervalInSecs();
+        <span class="hljs-keyword">int</span> expBackOffBound = clientConfig.getHeartbeatExecutorExponentialBackOffBound();
+        logger.info(<span class="hljs-string">"Starting heartbeat executor: "</span> + <span class="hljs-string">"renew interval is: &#123;&#125;"</span>, renewalIntervalInSecs);
+
+        <span class="hljs-comment">// Heartbeat timer</span>
+        heartbeatTask = <span class="hljs-keyword">new</span> TimedSupervisorTask(
+                <span class="hljs-string">"heartbeat"</span>,
+                scheduler,
+                heartbeatExecutor,
+                renewalIntervalInSecs,
+                TimeUnit.SECONDS,
+                expBackOffBound,
+                <span class="hljs-keyword">new</span> HeartbeatThread()
+        );
+        scheduler.schedule(
+                heartbeatTask,
+                renewalIntervalInSecs, TimeUnit.SECONDS);
+		···
+&#125;
+  
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * The heartbeat task that renews the lease in the given intervals.</span>
+<span class="hljs-comment">     */</span>
+<span class="hljs-keyword">private</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HeartbeatThread</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Runnable</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>&#123;
+      <span class="hljs-keyword">if</span> (renew()) &#123;
+        lastSuccessfulHeartbeatTimestamp = System.currentTimeMillis();
+      &#125;
+    &#125;
+&#125;
+  
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment">     * Renew with the eureka service by making the appropriate REST call</span>
+<span class="hljs-comment">     */</span>
+<span class="hljs-function"><span class="hljs-keyword">boolean</span> <span class="hljs-title">renew</span><span class="hljs-params">()</span> </span>&#123;
+  EurekaHttpResponse&lt;InstanceInfo&gt; httpResponse;
+  <span class="hljs-keyword">try</span> &#123;
+    <span class="hljs-comment">// 续约也是rest方式</span>
+    httpResponse = eurekaTransport.registrationClient.sendHeartBeat(instanceInfo.getAppName(), instanceInfo.getId(), instanceInfo, <span class="hljs-keyword">null</span>);
+    logger.debug(PREFIX + <span class="hljs-string">"&#123;&#125; - Heartbeat status: &#123;&#125;"</span>, appPathIdentifier, httpResponse.getStatusCode());
+    <span class="hljs-keyword">if</span> (httpResponse.getStatusCode() == Status.NOT_FOUND.getStatusCode()) &#123;
+      REREGISTER_COUNTER.increment();
+      logger.info(PREFIX + <span class="hljs-string">"&#123;&#125; - Re-registering apps/&#123;&#125;"</span>, appPathIdentifier, instanceInfo.getAppName());
+      <span class="hljs-keyword">long</span> timestamp = instanceInfo.setIsDirtyWithTime();
+      <span class="hljs-keyword">boolean</span> success = register();
+      <span class="hljs-keyword">if</span> (success) &#123;
+        instanceInfo.unsetIsDirty(timestamp);
+      &#125;
+      <span class="hljs-keyword">return</span> success;
+    &#125;
+    <span class="hljs-keyword">return</span> httpResponse.getStatusCode() == Status.OK.getStatusCode();
+  &#125; <span class="hljs-keyword">catch</span> (Throwable e) &#123;
+    logger.error(PREFIX + <span class="hljs-string">"&#123;&#125; - was unable to send heartbeat!"</span>, appPathIdentifier, e);
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">false</span>;
+  &#125;
+&#125;</code></pre>
+
+<ul>
+<li>声明了一个heartbeatTask定时任务进行续约，传入HeartbeatThread</li>
+<li>服务续约也是rest方式</li>
+</ul>
+<h2 id="六、配置详解"><a href="#六、配置详解" class="headerlink" title="六、配置详解"></a>六、配置详解</h2><p><code>META-INF/spring.factories</code>，内容中还有个<code>EurekaClientAutoConfiguration</code>，用于加载配置参数类</p>
+<pre><code class="hljs yaml"><span class="hljs-comment"># EurekaClient的自动配置类</span>
+<span class="hljs-string">org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration,\</span></code></pre>
+
+<pre><code class="hljs java"><span class="hljs-meta">@Bean</span>
+<span class="hljs-meta">@ConditionalOnMissingBean</span>(value = EurekaClientConfig<span class="hljs-class">.<span class="hljs-keyword">class</span>,</span>
+<span class="hljs-class">                          <span class="hljs-title">search</span> </span>= SearchStrategy.CURRENT)
+<span class="hljs-function"><span class="hljs-keyword">public</span> EurekaClientConfigBean <span class="hljs-title">eurekaClientConfigBean</span><span class="hljs-params">(ConfigurableEnvironment env)</span> </span>&#123;
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> EurekaClientConfigBean();
+&#125;
+
+<span class="hljs-meta">@Bean</span>
+<span class="hljs-meta">@ConditionalOnMissingBean</span>(value = EurekaInstanceConfig<span class="hljs-class">.<span class="hljs-keyword">class</span>,</span>
+<span class="hljs-class">                          <span class="hljs-title">search</span> </span>= SearchStrategy.CURRENT)
+<span class="hljs-function"><span class="hljs-keyword">public</span> EurekaInstanceConfigBean <span class="hljs-title">eurekaInstanceConfigBean</span><span class="hljs-params">(InetUtils inetUtils,</span></span>
+<span class="hljs-function"><span class="hljs-params">                                                         ManagementMetadataProvider managementMetadataProvider)</span> </span>&#123;&#125;</code></pre>
+
+<ul>
+<li>可以查看<code>EurekaClientConfigBean</code>和<code>EurekaInstanceConfigBean</code>获取比官方文档更详细的解释说明</li>
+<li>eureka的所有的配置信息，都是通过<code>EurekaInstanceConfigBean</code>加载的，真正注册时，内部包装成<code>InstanceInfo</code>进行传递</li>
+</ul>
+<h3 id="1、注册中心配置"><a href="#1、注册中心配置" class="headerlink" title="1、注册中心配置"></a>1、注册中心配置</h3><ul>
+<li><code>eureka.client.serverUrl.defaultZone=xxx</code>：</li>
+</ul>
+<pre><code class="hljs java"><span class="hljs-keyword">private</span> Map&lt;String, String&gt; serviceUrl = <span class="hljs-keyword">new</span> HashMap&lt;&gt;();
+
+&#123;
+   <span class="hljs-keyword">this</span>.serviceUrl.put(DEFAULT_ZONE, DEFAULT_URL);
+&#125;
+<span class="hljs-comment">/**</span>
+<span class="hljs-comment">	 * Default Eureka URL.</span>
+<span class="hljs-comment">	 */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String DEFAULT_URL = <span class="hljs-string">"http://localhost:8761"</span> + DEFAULT_PREFIX
+			+ <span class="hljs-string">"/"</span>;
+
+	<span class="hljs-comment">/**</span>
+<span class="hljs-comment">	 * Default availability zone if none is resolved based on region.</span>
+<span class="hljs-comment">	 */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String DEFAULT_ZONE = <span class="hljs-string">"defaultZone"</span>;</code></pre>
+
+<h3 id="2、实例名配置"><a href="#2、实例名配置" class="headerlink" title="2、实例名配置"></a>2、实例名配置</h3><ul>
+<li><code>eureka.instance.instanceId</code></li>
+<li>它是区分同一服务不同实例的唯一标识</li>
+<li>实例名采用主机名作为唯一标识，规则如下</li>
+</ul>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String <span class="hljs-title">getDefaultInstanceId</span><span class="hljs-params">(PropertyResolver resolver,</span></span>
+<span class="hljs-function"><span class="hljs-params">			<span class="hljs-keyword">boolean</span> includeHostname)</span> </span>&#123;
+		String vcapInstanceId = resolver.getProperty(<span class="hljs-string">"vcap.application.instance_id"</span>);
+		<span class="hljs-keyword">if</span> (StringUtils.hasText(vcapInstanceId)) &#123;
+			<span class="hljs-keyword">return</span> vcapInstanceId;
+		&#125;
+
+		String hostname = <span class="hljs-keyword">null</span>;
+		<span class="hljs-keyword">if</span> (includeHostname) &#123;
+			hostname = resolver.getProperty(<span class="hljs-string">"spring.cloud.client.hostname"</span>);
+		&#125;
+		String appName = resolver.getProperty(<span class="hljs-string">"spring.application.name"</span>);
+
+		String namePart = combineParts(hostname, SEPARATOR, appName);
+
+		String indexPart = resolver.getProperty(<span class="hljs-string">"spring.application.instance_id"</span>,
+				resolver.getProperty(<span class="hljs-string">"server.port"</span>));
+
+		<span class="hljs-keyword">return</span> combineParts(namePart, SEPARATOR, indexPart);
+	&#125;</code></pre>
+
+<blockquote>
+<p>即 <code>${spring.cloud.client.hostname}:${spring.application.name}:${spring.application.instance_id}</code></p>
+</blockquote>
+<h3 id="3、端点配置"><a href="#3、端点配置" class="headerlink" title="3、端点配置"></a>3、端点配置</h3><ul>
+<li><p><code>homePageUrl、statusPageUrl、healthCheckUrl</code>，即<code>spring-boot-actuator</code>模块提供的<code>/info</code>和<code>/health</code>端点</p>
+</li>
+<li><p>当应用设置了context-path时，端点也需要加上该前缀</p>
+</li>
+</ul>
+<pre><code class="hljs ini"><span class="hljs-attr">xxx.context-path</span>=/orange
+
+<span class="hljs-attr">eureka.instance.statusPageUrlPath</span>=<span class="hljs-variable">$&#123;xxx.context-path&#125;</span>/info
+<span class="hljs-attr">eureka.instance.healthCheckUrlPath</span>=<span class="hljs-variable">$&#123;xxx.context-path&#125;</span>/health</code></pre>
+
+<ul>
+<li>或者为了安全考虑，修改端点的原始路径</li>
+</ul>
+<pre><code class="hljs ini"><span class="hljs-attr">endpoints.info.path</span>=/orangeInfo
+<span class="hljs-attr">endpoints.health.path</span>=/orangeHealth
+
+<span class="hljs-attr">eureka.instance.statusPageUrlPath</span>=<span class="hljs-variable">$&#123;endpoints.info.path&#125;</span>
+<span class="hljs-attr">eureka.instance.healthCheckUrlPath</span>=<span class="hljs-variable">$&#123;endpoints.health.path&#125;</span></code></pre>
+
+<h3 id="4、健康检查"><a href="#4、健康检查" class="headerlink" title="4、健康检查"></a>4、健康检查</h3><ul>
+<li>客户端默认的心跳方式可以有效的检查客户端进程是否运行，但是无法保证客户端能否正常提供服务</li>
+<li>可以把客户端的健康检查交给actuator</li>
+</ul>
+<pre><code class="hljs yaml"><span class="hljs-comment"># 在pom中引入Spring-boot-starter-actuator</span>
+
+<span class="hljs-comment"># 增加参数配置：eureka.client.healthcheck.enabled=true</span></code></pre>
+
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/blog/categories/springCloud/">springCloud</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/blog/tags/eureka/">eureka</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/blog/2020/06/09/eureka%E7%BB%84%E4%BB%B6/">
+                        <span class="hidden-mobile">eureka组件</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'http://yoursite.com/2020/06/13/eureka源码/';
+        this.page.identifier = '/2020/06/13/eureka源码/';
+      };
+      var oldLoadDq = window.onload;
+      window.onload = function () {
+        oldLoadDq && oldLoadDq();
+
+        var d = document, s = d.createElement('script');
+        s.type = 'text/javascript';
+        s.src = '//' + 'orange' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+      };
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" target="_blank" rel="nofollow noopener noopener">comments
+        powered by Disqus.</a></noscript>
+  </div>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/blog/js/debouncer.js" ></script>
+<script  src="/blog/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/blog/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/blog/js/clipboard-use.js" ></script>
+
+
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "eureka源码&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/blog/js/local-search.js" ></script>
+  <script>
+    var path = "/blog/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

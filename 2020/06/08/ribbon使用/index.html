@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      512 字
+      595 字
     </span>
   
 
@@ -173,7 +173,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      6
+      7
        分钟
     </span>
   
@@ -251,6 +251,15 @@
   &lt;artifactId&gt;spring-cloud-starter-netflix-ribbon&lt;/artifactId&gt;
   &lt;version&gt;2.2.3.RELEASE&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
+
+<h2 id="3、自动装配方式解读"><a href="#3、自动装配方式解读" class="headerlink" title="3、自动装配方式解读"></a>3、自动装配方式解读</h2><p>在springCloud实现的服务治理框架中，默认对ribbon自动化整合配置。如eureka中<code>spring.factories</code>:</p>
+<pre><code class="hljs yaml"><span class="hljs-string">org.springframework.boot.autoconfigure.EnableAutoConfiguration=\</span>
+<span class="hljs-string">···</span>
+<span class="hljs-string">org.springframework.cloud.netflix.eureka.EurekaClientAutoConfiguration,\</span>
+<span class="hljs-comment"># 自动整合ribbon相关配置，通过这个类来了解它的配置详情</span>
+<span class="hljs-string">org.springframework.cloud.netflix.ribbon.eureka.RibbonEurekaAutoConfiguration,\</span>
+<span class="hljs-string">org.springframework.cloud.netflix.eureka.EurekaDiscoveryClientConfiguration,\</span>
+<span class="hljs-string">···</span></code></pre>
 
 
             </article>

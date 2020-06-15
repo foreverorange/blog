@@ -233,7 +233,7 @@ stream.for<span class="hljs-constructor">Each(System.<span class="hljs-params">o
 <h3 id="流通常由三部分构成："><a href="#流通常由三部分构成：" class="headerlink" title="流通常由三部分构成："></a>流通常由三部分构成：</h3><ol>
 <li>数据源：数据源一般用于流的获取，比如本文开头那个过滤用户的例子中users.stream()方法。</li>
 <li>中间处理：中间处理包括对流中元素的一系列处理，如：过滤（filter()），映射（map()），排序（sorted()）。</li>
-<li>终端处理：终端处理会生成结果，结果可以是任何不是流值，如List<String>；也可以不返回结果，如stream.forEach(System.out::println)就是将结果打印到控制台中，并没有返回。</li>
+<li>终端处理：终端处理会生成结果，结果可以是任何不是流值，如List<String>；也可以不返回结果，如stream.forEach(System.out::println)就是将结果打印到控制台中，并没有返回。</String></li>
 </ol>
 <h2 id="创建流"><a href="#创建流" class="headerlink" title="创建流"></a>创建流</h2><h3 id="由值创建流"><a href="#由值创建流" class="headerlink" title="由值创建流"></a>由值创建流</h3><p>使用静态方法Stream.of()创建流，该方法接收一个变长参数：</p>
 <pre><code class="hljs arduino"><span class="hljs-built_in">Stream</span>&lt;<span class="hljs-built_in">Stream</span>&gt; stream = <span class="hljs-built_in">Stream</span>.of(<span class="hljs-string">"A"</span>, <span class="hljs-string">"B"</span>, <span class="hljs-string">"C"</span>, <span class="hljs-string">"D"</span>);
@@ -304,7 +304,7 @@ Optional&lt;String&gt; element = get<span class="hljs-constructor">Stream()</spa
 
 <ol>
 <li>每次都需要重新getStream()来获取新的流，因为之前的流已经使用并且关闭了。可以理解为若返回值不是stream，则表示已经结束了流操作</li>
-<li>findAny的返回类型是一个Optional<T>类（java.util.Optional），它一个容器类，代表一个值存在或不存在，用来避免控制正异常。</li>
+<li>findAny的返回类型是一个Optional<T>类（java.util.Optional），它一个容器类，代表一个值存在或不存在，用来避免控制正异常。</T></li>
 <li>findFirst()和findAny()返回的都是第一个元素，通过查看javadoc描述，大致意思是findAny()是为了提高并行操作时的性能。数据大时可findany。</li>
 </ol>
 <h3 id="归约"><a href="#归约" class="headerlink" title="归约"></a>归约</h3><p>归约操作就是将流中的元素进行合并，形成一个新的值，常见的归约操作包括求和，求最大值或最小值。归约操作一般使用reduce()方法，与map()方法搭配使用，可以处理一些很复杂的归约操作。</p>

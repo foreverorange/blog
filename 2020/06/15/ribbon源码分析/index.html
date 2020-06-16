@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.6k 字
+      4.1k 字
     </span>
   
 
@@ -173,7 +173,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      37
+      61
        分钟
     </span>
   
@@ -266,10 +266,116 @@
 <span class="hljs-class">  <span class="hljs-title">public</span> <span class="hljs-title">LoadBalancerClient</span> <span class="hljs-title">loadBalancerClient</span>() </span>&#123;
     <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> RibbonLoadBalancerClient(springClientFactory());
   &#125;
+  
+  <span class="hljs-meta">@Bean</span>
+	<span class="hljs-meta">@ConditionalOnMissingBean</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> SpringClientFactory <span class="hljs-title">springClientFactory</span><span class="hljs-params">()</span> </span>&#123;
+		SpringClientFactory factory = <span class="hljs-keyword">new</span> SpringClientFactory();
+		factory.setConfigurations(<span class="hljs-keyword">this</span>.configurations);
+		<span class="hljs-keyword">return</span> factory;
+	&#125;
 ···</code></pre>
 
-<p>可以看出，它声明了LoadBalancerClient的实例为<code>RibbonLoadBalancerClient</code></p>
-<h3 id="2、负载均衡器自动配置"><a href="#2、负载均衡器自动配置" class="headerlink" title="2、负载均衡器自动配置"></a>2、负载均衡器自动配置</h3><ul>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SpringClientFactory</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">NamedContextFactory</span>&lt;<span class="hljs-title">RibbonClientSpecification</span>&gt; </span>&#123;
+
+	<span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String NAMESPACE = <span class="hljs-string">"ribbon"</span>;
+
+	<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">SpringClientFactory</span><span class="hljs-params">()</span> </span>&#123;
+		super(RibbonClientConfiguration.class, NAMESPACE, "ribbon.client.name");
+	&#125;</code></pre>
+
+<p>可以看出，它声明了<code>LoadBalancerClient</code>的实例为<code>RibbonLoadBalancerClient</code>，在生成<code>RibbonLoadBalancerClient</code>时传入了<code>springClientFactory()</code>，其内部引入了<code>RibbonClientConfiguration.class</code></p>
+<h3 id="2、ribbonClient实例配置"><a href="#2、ribbonClient实例配置" class="headerlink" title="2、ribbonClient实例配置"></a>2、ribbonClient实例配置</h3><pre><code class="hljs java"><span class="hljs-comment">/**</span>
+<span class="hljs-comment">	 * Ribbon client default connect timeout.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> DEFAULT_CONNECT_TIMEOUT = <span class="hljs-number">1000</span>;
+
+	<span class="hljs-comment">/**</span>
+<span class="hljs-comment">	 * Ribbon client default read timeout.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> DEFAULT_READ_TIMEOUT = <span class="hljs-number">1000</span>;
+
+	<span class="hljs-comment">/**</span>
+<span class="hljs-comment">	 * Ribbon client default Gzip Payload flag.</span>
+<span class="hljs-comment">	 */</span>
+	<span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">boolean</span> DEFAULT_GZIP_PAYLOAD = <span class="hljs-keyword">true</span>;
+
+	<span class="hljs-meta">@RibbonClientName</span>
+	<span class="hljs-keyword">private</span> String name = <span class="hljs-string">"client"</span>;
+
+	<span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> maybe re-instate autowired load balancers: identified by name they could be</span>
+	<span class="hljs-comment">// associated with ribbon clients</span>
+
+	<span class="hljs-meta">@Autowired</span>
+	<span class="hljs-keyword">private</span> PropertiesFactory propertiesFactory;
+
+	<span class="hljs-comment">// 定义ribbonClientConfig的配置类</span>
+	<span class="hljs-meta">@Bean</span>
+	<span class="hljs-meta">@ConditionalOnMissingBean</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> IClientConfig <span class="hljs-title">ribbonClientConfig</span><span class="hljs-params">()</span> </span>&#123;
+		DefaultClientConfigImpl config = <span class="hljs-keyword">new</span> DefaultClientConfigImpl();
+		config.loadProperties(<span class="hljs-keyword">this</span>.name);
+		config.set(CommonClientConfigKey.ConnectTimeout, DEFAULT_CONNECT_TIMEOUT);
+		config.set(CommonClientConfigKey.ReadTimeout, DEFAULT_READ_TIMEOUT);
+		config.set(CommonClientConfigKey.GZipPayload, DEFAULT_GZIP_PAYLOAD);
+		<span class="hljs-keyword">return</span> config;
+	&#125;
+
+	<span class="hljs-comment">// 	定义默认的负载均衡策略</span>
+	<span class="hljs-meta">@Bean</span>
+	<span class="hljs-meta">@ConditionalOnMissingBean</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> IRule <span class="hljs-title">ribbonRule</span><span class="hljs-params">(IClientConfig config)</span> </span>&#123;
+		<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.propertiesFactory.isSet(IRule<span class="hljs-class">.<span class="hljs-keyword">class</span>, <span class="hljs-title">name</span>)) </span>&#123;
+			<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.propertiesFactory.get(IRule<span class="hljs-class">.<span class="hljs-keyword">class</span>, <span class="hljs-title">config</span>, <span class="hljs-title">name</span>)</span>;
+		&#125;
+		ZoneAvoidanceRule rule = <span class="hljs-keyword">new</span> ZoneAvoidanceRule();
+		rule.initWithNiwsConfig(config);
+		<span class="hljs-keyword">return</span> rule;
+	&#125;
+
+	<span class="hljs-comment">// 定义默认的ping规则</span>
+	<span class="hljs-meta">@Bean</span>
+	<span class="hljs-meta">@ConditionalOnMissingBean</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> IPing <span class="hljs-title">ribbonPing</span><span class="hljs-params">(IClientConfig config)</span> </span>&#123;
+		<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.propertiesFactory.isSet(IPing<span class="hljs-class">.<span class="hljs-keyword">class</span>, <span class="hljs-title">name</span>)) </span>&#123;
+			<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.propertiesFactory.get(IPing<span class="hljs-class">.<span class="hljs-keyword">class</span>, <span class="hljs-title">config</span>, <span class="hljs-title">name</span>)</span>;
+		&#125;
+		<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> DummyPing();
+	&#125;
+	<span class="hljs-comment">// 定义服务列表</span>
+	<span class="hljs-meta">@Bean</span>
+	<span class="hljs-meta">@ConditionalOnMissingBean</span>
+	<span class="hljs-meta">@SuppressWarnings</span>(<span class="hljs-string">"unchecked"</span>)
+	<span class="hljs-function"><span class="hljs-keyword">public</span> ServerList&lt;Server&gt; <span class="hljs-title">ribbonServerList</span><span class="hljs-params">(IClientConfig config)</span> </span>&#123;
+		<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.propertiesFactory.isSet(ServerList<span class="hljs-class">.<span class="hljs-keyword">class</span>, <span class="hljs-title">name</span>)) </span>&#123;
+			<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.propertiesFactory.get(ServerList<span class="hljs-class">.<span class="hljs-keyword">class</span>, <span class="hljs-title">config</span>, <span class="hljs-title">name</span>)</span>;
+		&#125;
+		ConfigurationBasedServerList serverList = <span class="hljs-keyword">new</span> ConfigurationBasedServerList();
+		serverList.initWithNiwsConfig(config);
+		<span class="hljs-keyword">return</span> serverList;
+	&#125;
+  <span class="hljs-comment">// 定义服务列表更新器</span>
+	<span class="hljs-meta">@Bean</span>
+	<span class="hljs-meta">@ConditionalOnMissingBean</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> ServerListUpdater <span class="hljs-title">ribbonServerListUpdater</span><span class="hljs-params">(IClientConfig config)</span> </span>&#123;
+		<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> PollingServerListUpdater(config);
+	&#125;
+	<span class="hljs-comment">// 定义负载均衡器，传入默认的rule和ping，生成ZoneAwareLoadBalancer默认负载均衡器</span>
+	<span class="hljs-meta">@Bean</span>
+	<span class="hljs-meta">@ConditionalOnMissingBean</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> ILoadBalancer <span class="hljs-title">ribbonLoadBalancer</span><span class="hljs-params">(IClientConfig config,</span></span>
+<span class="hljs-function"><span class="hljs-params">			ServerList&lt;Server&gt; serverList, ServerListFilter&lt;Server&gt; serverListFilter,</span></span>
+<span class="hljs-function"><span class="hljs-params">			IRule rule, IPing ping, ServerListUpdater serverListUpdater)</span> </span>&#123;
+		<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.propertiesFactory.isSet(ILoadBalancer<span class="hljs-class">.<span class="hljs-keyword">class</span>, <span class="hljs-title">name</span>)) </span>&#123;
+			<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.propertiesFactory.get(ILoadBalancer<span class="hljs-class">.<span class="hljs-keyword">class</span>, <span class="hljs-title">config</span>, <span class="hljs-title">name</span>)</span>;
+		&#125;
+		<span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ZoneAwareLoadBalancer&lt;&gt;(config, rule, ping, serverList,
+				serverListFilter, serverListUpdater);
+	&#125;</code></pre>
+
+
+
+<h3 id="3、负载均衡器自动配置"><a href="#3、负载均衡器自动配置" class="headerlink" title="3、负载均衡器自动配置"></a>3、负载均衡器自动配置</h3><ul>
 <li>LoadBalancerAutoConfiguration</li>
 </ul>
 <p>而在类的上方，使用了<code>@AutoConfigureBefore({ LoadBalancerAutoConfiguration.class</code>，点进去如下：</p>
@@ -384,7 +490,7 @@
 
 &#125;</code></pre>
 
-<h3 id="3、负载均衡拦截器"><a href="#3、负载均衡拦截器" class="headerlink" title="3、负载均衡拦截器"></a>3、负载均衡拦截器</h3><ul>
+<h3 id="4、负载均衡拦截器"><a href="#4、负载均衡拦截器" class="headerlink" title="4、负载均衡拦截器"></a>4、负载均衡拦截器</h3><ul>
 <li>LoadBalancerInterceptor</li>
 </ul>
 <pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LoadBalancerInterceptor</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">ClientHttpRequestInterceptor</span> </span>&#123;
@@ -454,7 +560,201 @@
 		<span class="hljs-keyword">return</span> execute(serviceId, ribbonServer, request);
 	&#125;</code></pre>
 
-<h3 id="4、负载均衡器接口"><a href="#4、负载均衡器接口" class="headerlink" title="4、负载均衡器接口"></a>4、负载均衡器接口</h3><ul>
+<p>当一个被<code>@LoadBalanced</code>修饰的<code>RestTemplate</code>实例向外发送请求时，会被<code>LoadBalancerInterceptor</code>类的intercept函数拦截。之后通过<code>originalUri.getHost()</code>拿到具体的服务名，然后调用execute方法，根据服务名选择实例发起实际的请求。</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">protected</span> Server <span class="hljs-title">getServer</span><span class="hljs-params">(ILoadBalancer loadBalancer, Object hint)</span> </span>&#123;
+		<span class="hljs-keyword">if</span> (loadBalancer == <span class="hljs-keyword">null</span>) &#123;
+			<span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+		&#125;
+		<span class="hljs-comment">// Use 'default' on a null hint, or just pass it on?</span>
+		<span class="hljs-keyword">return</span> loadBalancer.chooseServer(hint != <span class="hljs-keyword">null</span> ? hint : <span class="hljs-string">"default"</span>);
+	&#125;</code></pre>
+
+<p>getServer方法使用ILoadBalancer获取了具体的服务。由第二小节ribbonClient实例配置中，我们知道，默认的loadBalancer是<code>ZoneAwareLoadBalancer</code>，通过<code>ZoneAwareLoadBalancer</code>的chooseServer方法获取到负载均衡策略分配到的服务实例server，将其包装成RibbonServer，继续执行execute方法：</p>
+<pre><code class="hljs java"><span class="hljs-meta">@Override</span>
+	<span class="hljs-keyword">public</span> &lt;T&gt; <span class="hljs-function">T <span class="hljs-title">execute</span><span class="hljs-params">(String serviceId, ServiceInstance serviceInstance,</span></span>
+<span class="hljs-function"><span class="hljs-params">			LoadBalancerRequest&lt;T&gt; request)</span> <span class="hljs-keyword">throws</span> IOException </span>&#123;
+		Server server = <span class="hljs-keyword">null</span>;
+		<span class="hljs-keyword">if</span> (serviceInstance <span class="hljs-keyword">instanceof</span> RibbonServer) &#123;
+			server = ((RibbonServer) serviceInstance).getServer();
+		&#125;
+		<span class="hljs-keyword">if</span> (server == <span class="hljs-keyword">null</span>) &#123;
+			<span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> IllegalStateException(<span class="hljs-string">"No instances available for "</span> + serviceId);
+		&#125;
+
+		RibbonLoadBalancerContext context = <span class="hljs-keyword">this</span>.clientFactory
+				.getLoadBalancerContext(serviceId);
+    <span class="hljs-comment">// 这里还使用了RibbonStatsRecorder来跟踪服务请求记录</span>
+		RibbonStatsRecorder statsRecorder = <span class="hljs-keyword">new</span> RibbonStatsRecorder(context, server);
+
+		<span class="hljs-keyword">try</span> &#123;
+      <span class="hljs-comment">// 回调LoadBalancerInterceptor中的LoadBalancerRequest的apply函数，向一个实际的服务发起请求</span>
+			T returnVal = request.apply(serviceInstance);
+			statsRecorder.recordStats(returnVal);
+			<span class="hljs-keyword">return</span> returnVal;
+		&#125;
+		<span class="hljs-comment">// catch IOException and rethrow so RestTemplate behaves correctly</span>
+		<span class="hljs-keyword">catch</span> (IOException ex) &#123;
+			statsRecorder.recordStats(ex);
+			<span class="hljs-keyword">throw</span> ex;
+		&#125;
+		<span class="hljs-keyword">catch</span> (Exception ex) &#123;
+			statsRecorder.recordStats(ex);
+			ReflectionUtils.rethrowRuntimeException(ex);
+		&#125;
+		<span class="hljs-keyword">return</span> <span class="hljs-keyword">null</span>;
+	&#125;</code></pre>
+
+<blockquote>
+<p>回调LoadBalancerInterceptor中的LoadBalancerRequest的apply函数，向一个实际的服务发起请求。从而实现了一开始以服务名作为host的URI到host:port形式的实际请求地址的转换。</p>
+</blockquote>
+<p>request.apply(serviceInstance)的具体实现如下</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> LoadBalancerRequest&lt;ClientHttpResponse&gt; <span class="hljs-title">createRequest</span><span class="hljs-params">(</span></span>
+<span class="hljs-function"><span class="hljs-params">			<span class="hljs-keyword">final</span> HttpRequest request, <span class="hljs-keyword">final</span> <span class="hljs-keyword">byte</span>[] body,</span></span>
+<span class="hljs-function"><span class="hljs-params">			<span class="hljs-keyword">final</span> ClientHttpRequestExecution execution)</span> </span>&#123;
+		<span class="hljs-keyword">return</span> instance -&gt; &#123;
+      <span class="hljs-comment">// 接收传入的serviceInstance，将其包装成HttpRequest</span>
+			HttpRequest serviceRequest = <span class="hljs-keyword">new</span> ServiceRequestWrapper(request, instance,
+					<span class="hljs-keyword">this</span>.loadBalancer);
+			<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.transformers != <span class="hljs-keyword">null</span>) &#123;
+				<span class="hljs-keyword">for</span> (LoadBalancerRequestTransformer transformer : <span class="hljs-keyword">this</span>.transformers) &#123;
+					serviceRequest = transformer.transformRequest(serviceRequest,
+							instance);
+				&#125;
+			&#125;
+      <span class="hljs-comment">// 调用ClientHttpRequestExecution并传入serviceRequest</span>
+			<span class="hljs-keyword">return</span> execution.execute(serviceRequest, body);
+		&#125;;
+	&#125;</code></pre>
+
+
+
+<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">InterceptingClientHttpRequest</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">AbstractBufferingClientHttpRequest</span> </span>&#123;
+  ···
+<span class="hljs-meta">@Override</span>
+		<span class="hljs-function"><span class="hljs-keyword">public</span> ClientHttpResponse <span class="hljs-title">execute</span><span class="hljs-params">(HttpRequest request, <span class="hljs-keyword">byte</span>[] body)</span> <span class="hljs-keyword">throws</span> IOException </span>&#123;
+			<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.iterator.hasNext()) &#123;
+				ClientHttpRequestInterceptor nextInterceptor = <span class="hljs-keyword">this</span>.iterator.next();
+				<span class="hljs-keyword">return</span> nextInterceptor.intercept(request, body, <span class="hljs-keyword">this</span>);
+			&#125;
+			<span class="hljs-keyword">else</span> &#123;
+				HttpMethod method = request.getMethod();
+				Assert.state(method != <span class="hljs-keyword">null</span>, <span class="hljs-string">"No standard HTTP method"</span>);
+        <span class="hljs-comment">// 这里真正创建请求，传入request.getURI()，即调用了上一步包装的HttpRequest.getURI()</span>
+				ClientHttpRequest delegate = requestFactory.createRequest(request.getURI(), method);
+				request.getHeaders().forEach((key, value) -&gt; delegate.getHeaders().addAll(key, value));
+				<span class="hljs-keyword">if</span> (body.length &gt; <span class="hljs-number">0</span>) &#123;
+					<span class="hljs-keyword">if</span> (delegate <span class="hljs-keyword">instanceof</span> StreamingHttpOutputMessage) &#123;
+						StreamingHttpOutputMessage streamingOutputMessage = (StreamingHttpOutputMessage) delegate;
+						streamingOutputMessage.setBody(outputStream -&gt; StreamUtils.copy(body, outputStream));
+					&#125;
+					<span class="hljs-keyword">else</span> &#123;
+						StreamUtils.copy(body, delegate.getBody());
+					&#125;
+				&#125;
+				<span class="hljs-keyword">return</span> delegate.execute();
+			&#125;
+		&#125;
+&#125;</code></pre>
+
+<p>包装类HttpRequest.getURI()方法如下：</p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ServiceRequestWrapper</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">HttpRequestWrapper</span> </span>&#123;
+
+	<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> ServiceInstance instance;
+
+	<span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> LoadBalancerClient loadBalancer;
+
+	<span class="hljs-meta">@Override</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> URI <span class="hljs-title">getURI</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-comment">// 这里获取URI时，调用了loadBalancer.reconstructURI方法</span>
+		URI uri = <span class="hljs-keyword">this</span>.loadBalancer.reconstructURI(<span class="hljs-keyword">this</span>.instance, getRequest().getURI());
+		<span class="hljs-keyword">return</span> uri;
+	&#125;</code></pre>
+
+<p>reconstructURI如下：</p>
+<pre><code class="hljs java"><span class="hljs-keyword">private</span> SpringClientFactory clientFactory;
+
+<span class="hljs-meta">@Override</span>
+	<span class="hljs-function"><span class="hljs-keyword">public</span> URI <span class="hljs-title">reconstructURI</span><span class="hljs-params">(ServiceInstance instance, URI original)</span> </span>&#123;
+		Assert.notNull(instance, <span class="hljs-string">"instance can not be null"</span>);
+    <span class="hljs-comment">// 获取服务id</span>
+		String serviceId = instance.getServiceId();
+    <span class="hljs-comment">// 从SpringClientFactory中获取对应服务的负载均衡器的上下文对象</span>
+		RibbonLoadBalancerContext context = <span class="hljs-keyword">this</span>.clientFactory
+				.getLoadBalancerContext(serviceId);
+
+		URI uri;
+		Server server;
+		<span class="hljs-keyword">if</span> (instance <span class="hljs-keyword">instanceof</span> RibbonServer) &#123;
+      <span class="hljs-comment">// 根据ServiceInstance构建具体服务实例信息的Server对象</span>
+			RibbonServer ribbonServer = (RibbonServer) instance;
+      <span class="hljs-comment">// 将springCloud定义的ServiceInstance转成netflix中需要的Server对象</span>
+			server = ribbonServer.getServer();
+			uri = updateToSecureConnectionIfNeeded(original, ribbonServer);
+		&#125;
+		<span class="hljs-keyword">else</span> &#123;
+			server = <span class="hljs-keyword">new</span> Server(instance.getScheme(), instance.getHost(),
+					instance.getPort());
+			IClientConfig clientConfig = clientFactory.getClientConfig(serviceId);
+			ServerIntrospector serverIntrospector = serverIntrospector(serviceId);
+			uri = updateToSecureConnectionIfNeeded(original, clientConfig,
+					serverIntrospector, server);
+		&#125;
+    <span class="hljs-comment">// 使用上下文对象来构建服务实例的URL</span>
+		<span class="hljs-keyword">return</span> context.reconstructURIWithServer(server, uri);
+	&#125;</code></pre>
+
+<blockquote>
+<p>SpringClientFactory是一个用来创建客户端负载均衡器的工厂类，它为每一个不同名的ribbon客户端生成不同的Spring上下文。</p>
+</blockquote>
+<blockquote>
+<p>RibbonLoadBalancerContext时LoadBalancerContext的子类，用于存储负载均衡器本身的一些上下文内容和常用API操作，如reconstructURIWithServer。</p>
+</blockquote>
+<p>reconstructURIWithServer如下：</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> URI <span class="hljs-title">reconstructURIWithServer</span><span class="hljs-params">(Server server, URI original)</span> </span>&#123;
+  			<span class="hljs-comment">// 从server中获取host和port信息，然后和original中的其他信息进行拼接整合，形成最终要访问的服务实例的具体地址</span>
+        String host = server.getHost();
+        <span class="hljs-keyword">int</span> port = server.getPort();
+        String scheme = server.getScheme();
+        
+        <span class="hljs-keyword">if</span> (host.equals(original.getHost()) 
+                &amp;&amp; port == original.getPort()
+                &amp;&amp; scheme == original.getScheme()) &#123;
+            <span class="hljs-keyword">return</span> original;
+        &#125;
+        <span class="hljs-keyword">if</span> (scheme == <span class="hljs-keyword">null</span>) &#123;
+            scheme = original.getScheme();
+        &#125;
+        <span class="hljs-keyword">if</span> (scheme == <span class="hljs-keyword">null</span>) &#123;
+            scheme = deriveSchemeAndPortFromPartialUri(original).first();
+        &#125;
+
+        <span class="hljs-keyword">try</span> &#123;
+            StringBuilder sb = <span class="hljs-keyword">new</span> StringBuilder();
+            sb.append(scheme).append(<span class="hljs-string">"://"</span>);
+            <span class="hljs-keyword">if</span> (!Strings.isNullOrEmpty(original.getRawUserInfo())) &#123;
+                sb.append(original.getRawUserInfo()).append(<span class="hljs-string">"@"</span>);
+            &#125;
+            sb.append(host);
+            <span class="hljs-keyword">if</span> (port &gt;= <span class="hljs-number">0</span>) &#123;
+                sb.append(<span class="hljs-string">":"</span>).append(port);
+            &#125;
+            sb.append(original.getRawPath());
+            <span class="hljs-keyword">if</span> (!Strings.isNullOrEmpty(original.getRawQuery())) &#123;
+                sb.append(<span class="hljs-string">"?"</span>).append(original.getRawQuery());
+            &#125;
+            <span class="hljs-keyword">if</span> (!Strings.isNullOrEmpty(original.getRawFragment())) &#123;
+                sb.append(<span class="hljs-string">"#"</span>).append(original.getRawFragment());
+            &#125;
+            URI newURI = <span class="hljs-keyword">new</span> URI(sb.toString());
+            <span class="hljs-keyword">return</span> newURI;            
+        &#125; <span class="hljs-keyword">catch</span> (URISyntaxException e) &#123;
+            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> RuntimeException(e);
+        &#125;
+    &#125;</code></pre>
+
+
+
+<h3 id="5、负载均衡器接口"><a href="#5、负载均衡器接口" class="headerlink" title="5、负载均衡器接口"></a>5、负载均衡器接口</h3><ul>
 <li><p>ILoadBalancer</p>
 <p>ILoadBalancer 中定义了负载均衡器的操作的接口：</p>
 </li>
@@ -514,9 +814,12 @@
 	<span class="hljs-function"><span class="hljs-keyword">public</span> List&lt;Server&gt; <span class="hljs-title">getAllServers</span><span class="hljs-params">()</span></span>;
 &#125;</code></pre>
 
+<blockquote>
+<p>Server对象包含了服务端节点的元数据信息，如host、port、以及一些部署信息。</p>
+</blockquote>
 <p>ILoadBalancer的实现类，完整的类图如下：</p>
 <p><img src="/blog/2020/06/15/ribbon%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/ILoadBalancerDiagram.png" srcset="/blog/img/loading.gif" alt="ILoadBalancerDiagram"></p>
-<p>从上面的类图可以看到，ILoadBalancer 有三个实现类，他们之间是继承关系，最终的实现类是 ZoneAwareLoadBalancer。</p>
+<p>从上面的类图可以看到，ILoadBalancer 有三个实现类，BaseLoadBalancer实现了基础的负载均衡，DynamicServerListLoadBalancer和ZoneAwareLoadBalancer则在策略上做了一些功能的扩展。他们之间是继承关系，最终的实现类是 ZoneAwareLoadBalancer。</p>
 <p>很多东西都是定义在BaseLoadBalancer中的，先从 BaseLoadBalancer 中的 变量看：</p>
 <pre><code class="hljs java"><span class="hljs-comment">/**</span>
 <span class="hljs-comment"> * A basic implementation of the load balancer where an arbitrary list of</span>
@@ -584,7 +887,7 @@
 <li><strong>DynamicServerListLoadBalancer</strong> ：使用动态源的服务器， 即服务器列表可能是在运行时更改。 通过一些Filter函数来动态的过滤掉指定的服务器列表；</li>
 <li><strong>ZoneAwareLoadBalancer</strong> ：这个负载均衡器适用于异地多机房的情况，在选择服务器的时候可以避免整个区域。LoadBalancer将计算并检查所有可用区域的区域统计信息。如果任何区域的“平均活动请求数”已达到配置的阈值，则该区域将从活动服务器列表中删除。如果多个区域已达到阈值，则将删除每台服务器上最活跃请求的区域。一旦删除了最坏的区域，将在其余区域中选择一个区域，其概率与其实例数成正比。服务器将从具有指定规则的选定区域返回。对于每个请求都将重复上述步骤，也就是说，每个区域相关的负载平衡决策都是在最新统计信息的帮助下实时做的。</li>
 </ul>
-<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><p>使用<code>@LoadBalanced</code>注解标记<code>RestTemplate</code>，在<code>LoadBalancerAutoConfiguration</code>中注入被标记的<code>RestTemplate</code>，使用<code>RestTemplateCustomizer</code>（定制器）并为其增加<code>LoadBalancerInterceptor</code>的拦截器，拦截器中调用<code>LoadBalancerClient</code>（负载均衡客户端）进行处理，而<code>LoadBalancerClient</code>（负载均衡客户端）内部调用 <code>ILoadBalancer</code>（负载均衡器）做实际处理。</p>
+<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><p>使用<code>@LoadBalanced</code>注解标记<code>RestTemplate</code>，在<code>LoadBalancerAutoConfiguration</code>中注入被标记的<code>RestTemplate</code>，使用<code>RestTemplateCustomizer</code>（定制器）并为其增加<code>LoadBalancerInterceptor</code>的拦截器，拦截器中调用<code>LoadBalancerClient</code>（负载均衡客户端）进行处理，获取实际server信息，并回调request，将以逻辑服务名为host的URI转成具体的服务实例。而<code>LoadBalancerClient</code>（负载均衡客户端）内部实际还是调用netflix的 <code>ILoadBalancer</code>（负载均衡器）接口的实现<strong>（ZoneAwareLoadBalancer）</strong></p>
 <p>在<code>ILoadBalancer</code> （负载均衡器）中配置了PIng策略、负载均衡策略、服务列表信息。整个过程如下：</p>
 <p><code>@LoadBalanced</code>–&gt;<code>LoadBalancerAutoConfiguration</code>–&gt;<code>RestTemplateCustomizer</code>–&gt;<code>LoadBalancerInterceptor</code>–&gt;<code>LoadBalancerClient</code>–&gt;<code>ILoadBalancer</code></p>
 <p>注解限定 –&gt; rest定制器 –&gt;  拦截器 –&gt;  客户端  –&gt; 负载均衡器</p>

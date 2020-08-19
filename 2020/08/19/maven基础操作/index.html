@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/blog/img/favicon.png">
+  <link rel="icon" type="image/png" href="/blog/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="foreverorange">
+  <meta name="keywords" content="">
+  <title>maven基础操作 - foreverorange</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/blog/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/blog/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/blog/atom.xml" title="foreverorange" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/blog/">&nbsp;<strong>扬帆！起航！！</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/blog/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-08-19 23:25">
+      2020年8月19日 晚上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.4k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      18
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <h2 id="一、指定jdk版本"><a href="#一、指定jdk版本" class="headerlink" title="一、指定jdk版本"></a>一、指定jdk版本</h2><ul>
+<li>不指定，每次reimportant都会变成1.5<pre><code class="hljs java">&lt;properties&gt;
+    &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+    &lt;project.build.sourceVersion&gt;1.8&lt;/project.build.sourceVersion&gt;
+    &lt;project.build.targetVersion&gt;1.8&lt;/project.build.targetVersion&gt;
+    
+    &lt;!--maven report 会使用<span class="hljs-number">1.8</span>编译，不加每次都会退到<span class="hljs-number">1.5</span>--&gt;
+    &lt;maven.compiler.source&gt;1.8&lt;/maven.compiler.source&gt;
+    &lt;maven.compiler.target&gt;1.8&lt;/maven.compiler.target&gt;
+    &lt;java.version&gt;1.8&lt;/java.version&gt;
+&lt;/properties&gt;</code></pre>
+
+</li>
+</ul>
+<h2 id="二、包含src下的静态文件"><a href="#二、包含src下的静态文件" class="headerlink" title="二、包含src下的静态文件"></a>二、包含src下的静态文件</h2><ul>
+<li>一般是mapper文件，不指定，则不打包到文件中<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">build</span>&gt;</span>
+    <span class="hljs-comment">&lt;!-- 将xml一起打包 --&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">resources</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">resource</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">directory</span>&gt;</span>src/main/resources<span class="hljs-tag">&lt;/<span class="hljs-name">directory</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">includes</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">include</span>&gt;</span>**/*.*<span class="hljs-tag">&lt;/<span class="hljs-name">include</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">includes</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">resource</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">resource</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">directory</span>&gt;</span>src/main/java<span class="hljs-tag">&lt;/<span class="hljs-name">directory</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">includes</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">include</span>&gt;</span>**/*.properties<span class="hljs-tag">&lt;/<span class="hljs-name">include</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">include</span>&gt;</span>**/*.xml<span class="hljs-tag">&lt;/<span class="hljs-name">include</span>&gt;</span>
+            <span class="hljs-tag">&lt;/<span class="hljs-name">includes</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">resource</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">resources</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">build</span>&gt;</span></code></pre>
+
+</li>
+</ul>
+<h2 id="三、tomcat部署临时maven仓库"><a href="#三、tomcat部署临时maven仓库" class="headerlink" title="三、tomcat部署临时maven仓库"></a>三、tomcat部署临时maven仓库</h2><pre><code class="hljs crystal">将maven整个包放在 webapps/ROOT下，如下所示
+/market/maven/apache-tomcat/webapps/ROOT</code></pre>
+
+<h2 id="四、scope"><a href="#四、scope" class="headerlink" title="四、scope"></a>四、scope</h2><h3 id="4-1-Dependency-Scope"><a href="#4-1-Dependency-Scope" class="headerlink" title="4.1 Dependency Scope"></a>4.1 Dependency Scope</h3><pre><code class="hljs asciidoc"><span class="hljs-bullet">* </span>compile，缺省值，适用于所有阶段，会随着项目一起发布。 
+<span class="hljs-bullet">* </span>provided，类似compile，期望JDK、容器或使用者会提供这个依赖。如servlet.jar。 
+<span class="hljs-bullet">* </span>runtime，只在运行时使用，如JDBC驱动，适用运行和测试阶段。 
+<span class="hljs-bullet">* </span>test，只在测试时使用，用于编译和运行测试代码。不会随项目发布。 
+<span class="hljs-bullet">* </span>system，类似provided，需要显式提供包含依赖的jar，Maven不会在Repository中查找</code></pre>
+
+<blockquote>
+<p> 依赖范围import只在dependencyManagement元素下才有效果，使用该范围的依赖通常指向一个pom，作用是将目标pom中的dependencyManagement配置导入并合并到当前pom的dependencyManagement配置。</p>
+</blockquote>
+<h3 id="4-2-Optional和Exclusions"><a href="#4-2-Optional和Exclusions" class="headerlink" title="4.2 Optional和Exclusions"></a>4.2 Optional和Exclusions</h3><p>Optional和Exclusions都是用来排除jar包依赖使用的，两者在使用上却是相反。</p>
+<p>Optional定义后，该依赖只能在本项目中传递，不会传递到引用该项目的父项目中，父项目需要主动引用该依赖才行。</p>
+<p>Exclusions则是主动排除子项目传递过来的依赖。</p>
+<h2 id="五、导出maven项目依赖的jar包"><a href="#五、导出maven项目依赖的jar包" class="headerlink" title="五、导出maven项目依赖的jar包"></a>五、导出maven项目依赖的jar包</h2><h3 id="5-1、导出到自定义目录中"><a href="#5-1、导出到自定义目录中" class="headerlink" title="5.1、导出到自定义目录中"></a>5.1、导出到自定义目录中</h3><ul>
+<li>打开cmd，进入项目根目录（pom.xml文件也在这里)，并执行目录，lib文件如没有手动创建也会自动创建： </li>
+</ul>
+<pre><code class="hljs crystal">mvn <span class="hljs-symbol">dependency:</span>copy-dependencies -DoutputDirectory=<span class="hljs-class"><span class="hljs-keyword">lib</span></span></code></pre>
+
+<h3 id="5-2、导出到默认目录-targed-dependency"><a href="#5-2、导出到默认目录-targed-dependency" class="headerlink" title="5.2、导出到默认目录 targed/dependency"></a>5.2、导出到默认目录 targed/dependency</h3><ul>
+<li>从Maven项目中导出项目依赖的jar包：进入工程pom.xml 所在的目录下，执行如下命令：</li>
+</ul>
+<pre><code class="hljs dockerfile">mvn dependency:<span class="hljs-keyword">copy</span><span class="bash">-dependencies</span></code></pre>
+
+<ul>
+<li>或在eclipse中，选择项目的pom.xml文件，点击右键菜单中的Run As,见下图红框中，在弹出的Configuration窗口中，输入 dependency:copy-dependencies后，点击运行<br>maven项目所依赖的jar包会导出到targed/dependency目录中。</li>
+</ul>
+<h3 id="5-3、设置依赖级别"><a href="#5-3、设置依赖级别" class="headerlink" title="5.3、设置依赖级别"></a>5.3、设置依赖级别</h3><ul>
+<li>同时可以设置依赖级别，通常使用compile级别</li>
+</ul>
+<pre><code class="hljs routeros">mvn dependency:copy-dependencies <span class="hljs-attribute">-DoutputDirectory</span>=lib   <span class="hljs-attribute">-DincludeScope</span>=compile</code></pre>
+
+<h2 id="六、dependency"><a href="#六、dependency" class="headerlink" title="六、dependency"></a>六、dependency</h2><h3 id="6-1-dependencyManagement"><a href="#6-1-dependencyManagement" class="headerlink" title="6.1 dependencyManagement"></a>6.1 dependencyManagement</h3><p>dependencyManagement里只是声明依赖，并不实现引入，因此子项目需要显示的声明需要用的依赖。如果不在子项目中声明依赖，是不会从父项目中继承下来的；只有在子项目中写了该依赖项，并且没有指定具体版本，才会从父项目中继承该项，并且version和scope都读取自父pom;另外如果子项目中指定了版本号，那么会使用子项目中指定的jar版本。</p>
+<h3 id="6-2-Dependencies"><a href="#6-2-Dependencies" class="headerlink" title="6.2 Dependencies"></a>6.2 Dependencies</h3><p>所有生命在dependencies里的依赖都会自动引入，并默认被所有的子项目继承。dependencies即使在子项目中不写该依赖项，那么子项目仍然会从父项目中继承该依赖项（全部继承）</p>
+<h3 id="6-3reposity"><a href="#6-3reposity" class="headerlink" title="6.3reposity"></a>6.3reposity</h3><p>pom.xml中添加指定的中央仓库</p>
+<p><code>&lt;repositories&gt;&lt;repository&gt;&lt;&gt;&lt;&gt;</code></p>
+<h2 id="七、依赖冲突"><a href="#七、依赖冲突" class="headerlink" title="七、依赖冲突"></a>七、依赖冲突</h2><p>为什么会出现依赖冲突？</p>
+<p>首先要说明Maven的依赖管理，maven在依赖冲管理中有一下几个原则。</p>
+<ul>
+<li>依赖是使用Maven坐标来定位的，而Maven坐标主要由GAV（groupId, artifactId, version）构成。如果两个相同的依赖包，如果groupId, artifactId, version不同，那么maven也认为这两个是不同的。</li>
+<li>依赖会传递，A依赖了B，B依赖了C，那么A的依赖中就会出现B和C。</li>
+<li>Maven对同一个groupId, artifactId的冲突仲裁，不是以version越大越保留，而是依赖路径越短越优先，然后进行保留。</li>
+<li>依赖的scope会影响依赖的影响范围。</li>
+</ul>
+<blockquote>
+<p>可以通过设定依赖的<code>&lt;exclusions&gt;</code>来进行排除。</p>
+</blockquote>
+<h2 id="八、部署到本地、远程仓库"><a href="#八、部署到本地、远程仓库" class="headerlink" title="八、部署到本地、远程仓库"></a>八、部署到本地、远程仓库</h2><h3 id="8-1-安装到本地仓库"><a href="#8-1-安装到本地仓库" class="headerlink" title="8.1 安装到本地仓库"></a>8.1 安装到本地仓库</h3><p><code>mvn clean install</code></p>
+<h3 id="8-2-部署到远程仓库"><a href="#8-2-部署到远程仓库" class="headerlink" title="8.2 部署到远程仓库"></a>8.2 部署到远程仓库</h3><p><code>mvn clean deploy</code></p>
+<p>需要认证信息，只能在settings.xml中配置。仓库的id要对应上</p>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">servers</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">server</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span>public-snapshots<span class="hljs-tag">&lt;/<span class="hljs-name">id</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">username</span>&gt;</span>dev<span class="hljs-tag">&lt;/<span class="hljs-name">username</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">password</span>&gt;</span>help<span class="hljs-tag">&lt;/<span class="hljs-name">password</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">server</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">server</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span>public-repo<span class="hljs-tag">&lt;/<span class="hljs-name">id</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">username</span>&gt;</span>dev<span class="hljs-tag">&lt;/<span class="hljs-name">username</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">password</span>&gt;</span>help<span class="hljs-tag">&lt;/<span class="hljs-name">password</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">server</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">server</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span>nexus<span class="hljs-tag">&lt;/<span class="hljs-name">id</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">username</span>&gt;</span>admin<span class="hljs-tag">&lt;/<span class="hljs-name">username</span>&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">password</span>&gt;</span>admin123<span class="hljs-tag">&lt;/<span class="hljs-name">password</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">server</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">servers</span>&gt;</span></code></pre>
+<p>pom中的发布信息</p>
+<pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">distributionManagement</span>&gt;</span>
+	<span class="hljs-tag">&lt;<span class="hljs-name">repository</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span>public-repo<span class="hljs-tag">&lt;/<span class="hljs-name">id</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>thunisoft snapshots repository<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">url</span>&gt;</span>http://repo.aliyun.com/maven2/content/repositories/releases/<span class="hljs-tag">&lt;/<span class="hljs-name">url</span>&gt;</span>
+	<span class="hljs-tag">&lt;/<span class="hljs-name">repository</span>&gt;</span>
+	<span class="hljs-tag">&lt;<span class="hljs-name">snapshotRepository</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">id</span>&gt;</span>public-snapshots<span class="hljs-tag">&lt;/<span class="hljs-name">id</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>thunisoft release repository<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span>
+		<span class="hljs-tag">&lt;<span class="hljs-name">url</span>&gt;</span>http://repo.aliyun.com/maven2/content/repositories/snapshots/<span class="hljs-tag">&lt;/<span class="hljs-name">url</span>&gt;</span>
+	<span class="hljs-tag">&lt;/<span class="hljs-name">snapshotRepository</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">distributionManagement</span>&gt;</span></code></pre>
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/blog/categories/maven/">maven</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/blog/tags/maven/">maven</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/blog/2020/08/12/%E7%BA%BF%E7%A8%8B%E4%B9%8B%E4%BB%BB%E5%8A%A1%E6%89%A7%E8%A1%8C/">
+                        <span class="hidden-mobile">线程之多少个线程合适</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'http://yoursite.com/2020/08/19/maven基础操作/';
+        this.page.identifier = '/2020/08/19/maven基础操作/';
+      };
+      var oldLoadDq = window.onload;
+      window.onload = function () {
+        oldLoadDq && oldLoadDq();
+
+        var d = document, s = d.createElement('script');
+        s.type = 'text/javascript';
+        s.src = '//' + 'orange' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+      };
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" target="_blank" rel="nofollow noopener noopener">comments
+        powered by Disqus.</a></noscript>
+  </div>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/blog/js/debouncer.js" ></script>
+<script  src="/blog/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/blog/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/blog/js/clipboard-use.js" ></script>
+
+
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "maven基础操作&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/blog/js/local-search.js" ></script>
+  <script>
+    var path = "/blog/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

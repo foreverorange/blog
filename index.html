@@ -168,6 +168,162 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/blog/2020/08/12/%E7%BA%BF%E7%A8%8B%E4%B9%8B%E4%BB%BB%E5%8A%A1%E6%89%A7%E8%A1%8C/" target="_self">
+          <img src="/blog/img/index_img.png" srcset="/blog/img/loading.gif" alt="线程之多少个线程合适">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a class="index-header" href="/blog/2020/08/12/%E7%BA%BF%E7%A8%8B%E4%B9%8B%E4%BB%BB%E5%8A%A1%E6%89%A7%E8%A1%8C/">线程之多少个线程合适</a>
+
+      <a href="/blog/2020/08/12/%E7%BA%BF%E7%A8%8B%E4%B9%8B%E4%BB%BB%E5%8A%A1%E6%89%A7%E8%A1%8C/" class="index-excerpt">
+        
+        
+          
+        
+        <div>在正常的负载下，服务器应用程序应该同时表现出良好的吞吐量和快速的响应性。
+服务商希望应用程序支持尽可能多的用户，从而降低每个用户的服务成本；而用户则希望获得尽快的响应。
+当负荷过载时，应用程序的性能应该是逐渐降低，而不是直接失败。因此需要有任务边界和任务隔离。
+一、无限制创建线程的不足2.1. 线程生命周期的开销非常高线程的创建需要时间，需要jvm和操作系统提供辅助支持
+2.2. 资源消耗
+活跃的</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-08-12
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/blog/categories/java/">java</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/blog/tags/thread/">thread</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/blog/2020/07/29/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80/" target="_self">
+          <img src="/blog/img/index_img.png" srcset="/blog/img/loading.gif" alt="多线程基础">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a class="index-header" href="/blog/2020/07/29/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80/">多线程基础</a>
+
+      <a href="/blog/2020/07/29/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%9F%BA%E7%A1%80/" class="index-excerpt">
+        
+        
+          
+        
+        <div>一、volatile变量的可见性
+一种稍弱的同步机制，用来确保将变量的更新操作通知到其他线程。
+即读取volatile类型的变量时，总会获取到最新写入的值。
+将变量声明为volatile类型后，会禁止指令重排。
+volatile的语义不足以确保递增操作（count++）的原子性
+
+
+加锁机制既能确保可见性，又能确保原子性，而volatile变量只能确保可见性。
+
+当且仅当满足如下条件时，使用vol</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-07-29
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/blog/categories/java/">java</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/blog/tags/thread/">thread</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/blog/2020/06/29/hystrix%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" target="_self">
+          <img src="/blog/img/index_img.png" srcset="/blog/img/loading.gif" alt="hystrix源码分析">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a class="index-header" href="/blog/2020/06/29/hystrix%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">hystrix源码分析</a>
+
+      <a href="/blog/2020/06/29/hystrix%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" class="index-excerpt">
+        
+        
+          
+        
+        <div>基本原理分布式系统中一个服务可能依赖着很多其他服务，在高并发的场景下，如何保证依赖的某些服务如果出了问题不会导致主服务宕机这个问题就会变得异常重要。
+针对这个问题直观想到的解决方案就是做依赖隔离。将不同的依赖分配到不同的调用链中，某一条链发生失败不会影响别的链。
+
+hystrix使用命令模式hystrixCommand进行包装，每个命令在单独线程（信号量）下执行。
+调用结果分为：成功、异常失败、超</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-06-29
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/blog/categories/springCloud/">springCloud</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/blog/tags/hystrix/">hystrix</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
         <a href="/blog/2020/06/15/ribbon%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" target="_self">
           <img src="/blog/img/index_img.png" srcset="/blog/img/loading.gif" alt="ribbon源码分析">
         </a>
@@ -523,176 +679,11 @@ Spring cloud ribbon是一个基于HTTP和TCP的客户端负载均衡工具，它
     </div>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/blog/2020/06/07/%E3%80%90%E5%B9%B6%E5%8F%91%E3%80%91%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97/" target="_self">
-          <img src="/blog/img/index_img.png" srcset="/blog/img/loading.gif" alt="【并发】阻塞队列（BlockingQueue）">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/blog/2020/06/07/%E3%80%90%E5%B9%B6%E5%8F%91%E3%80%91%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97/">【并发】阻塞队列（BlockingQueue）</a>
-
-      <a href="/blog/2020/06/07/%E3%80%90%E5%B9%B6%E5%8F%91%E3%80%91%E9%98%BB%E5%A1%9E%E9%98%9F%E5%88%97/" class="index-excerpt">
-        
-        
-          
-        
-        <div>一、什么是阻塞队列阻塞队列是一种特殊的支持阻塞的插入和移除的特殊容器。
-阻塞插入：
-
-当队列满时，向队列中插入元素的线程会被阻塞，直到队列中有元素被移除。
-即队列不满时，才能插入元素，否则阻塞。
-
-阻塞移除：
-
-当队列为空时，从队列中移除数据的线程会被阻塞，直到队列中有新的元素被添加。
-即队列不为空时，才能取出元素，否则阻塞。
-
-二、常见方法
-
-
-方法
-备注
-
-
-
-add/remove
-增删元素，</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-07
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/blog/categories/java/">java</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/blog/tags/thread-blockingQueue/">thread blockingQueue</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/blog/2020/06/05/%E3%80%90%E5%B9%B6%E5%8F%91%E3%80%91%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85/" target="_self">
-          <img src="/blog/img/index_img.png" srcset="/blog/img/loading.gif" alt="【并发】生产者消费者">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/blog/2020/06/05/%E3%80%90%E5%B9%B6%E5%8F%91%E3%80%91%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85/">【并发】生产者消费者</a>
-
-      <a href="/blog/2020/06/05/%E3%80%90%E5%B9%B6%E5%8F%91%E3%80%91%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85/" class="index-excerpt">
-        
-        
-          
-        
-        <div>一、生产者消费者生产者和消费者在同一时间段内共用同一段存储空间，生产者put数据，消费者take数据
-阻塞队列就相当于一个缓冲区，平衡了生产者和消费者的处理能力，将他们解耦。
-二、四种实现生产者消费者模型1、Object的wait() / notify()方法wait/notify 是Object的方法，因此我们可以给任何对象实现同步机制。
-wait：当缓冲区满时，生产者/消费者放弃锁，让度cpu</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-05
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/blog/categories/java/">java</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/blog/tags/thread-queue/">thread queue</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/blog/2020/06/03/springboot%E8%87%AA%E5%AE%9A%E4%B9%89starter/" target="_self">
-          <img src="/blog/img/index_img.png" srcset="/blog/img/loading.gif" alt="springboot自定义starter">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/blog/2020/06/03/springboot%E8%87%AA%E5%AE%9A%E4%B9%89starter/">springboot自定义starter</a>
-
-      <a href="/blog/2020/06/03/springboot%E8%87%AA%E5%AE%9A%E4%B9%89starter/" class="index-excerpt">
-        
-        
-          
-        
-        <div>写在前面按照约定，官方的为spring-boot-xxx-starter ，非官方的为 xxx-spring-boot-starter
-一、Spring Boot starter机制
-Spring Boot中的starter是一种非常重要的机制，应用者只需要在maven中引入starter依赖，Spring Boot就能自动扫描到要加载的信息并启动相应的默认配置。
-
-starter让我们摆脱了各种</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-06-03
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/blog/categories/java/">java</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/blog/tags/springboot/">springboot</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <span class="page-number current">1</span><a class="page-number" href="/blog/page/2/">2</a><a class="extend next" rel="next" href="/blog/page/2/"><i class="iconfont icon-arrowright"></i></a>
+      <span class="page-number current">1</span><a class="page-number" href="/blog/page/2/">2</a><a class="page-number" href="/blog/page/3/">3</a><a class="extend next" rel="next" href="/blog/page/2/"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
   

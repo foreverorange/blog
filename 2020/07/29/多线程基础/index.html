@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/blog/img/favicon.png">
+  <link rel="icon" type="image/png" href="/blog/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="foreverorange">
+  <meta name="keywords" content="">
+  <title>多线程基础 - foreverorange</title>
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/github-markdown-css/4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/blog/lib/hint/hint.min.css" />
+
+  
+    <link  rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/10.0.0/styles/github-gist.min.css" />
+  
+
+  
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_yg9cfy8wd6.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_pjno9b9zyxs.css">
+
+
+<link  rel="stylesheet" href="/blog/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+<meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/blog/atom.xml" title="foreverorange" type="application/atom+xml">
+</head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/blog/">&nbsp;<strong>扬帆！起航！！</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/blog/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" data-toggle="modal" data-target="#modalSearch">&nbsp;&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="view intro-2" id="background" parallax=true
+         style="background: url('/blog/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="container text-center white-text fadeInUp">
+            <span class="h2" id="subtitle">
+              
+            </span>
+
+            
+              
+  <div class="mt-3 post-meta">
+    <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+    <time datetime="2020-07-29 08:08">
+      2020年7月29日 早上
+    </time>
+  </div>
+
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      957 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      11
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-md">
+      <div class="container nopadding-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <div class="post-content mx-auto" id="post">
+            
+            <article class="markdown-body">
+              <h3 id="一、volatile变量的可见性"><a href="#一、volatile变量的可见性" class="headerlink" title="一、volatile变量的可见性"></a>一、volatile变量的可见性</h3><ul>
+<li>一种稍弱的同步机制，用来确保将变量的更新操作通知到其他线程。</li>
+<li>即读取volatile类型的变量时，总会获取到最新写入的值。</li>
+<li>将变量声明为volatile类型后，会禁止指令重排。</li>
+<li>volatile的语义不足以确保递增操作（count++）的原子性</li>
+</ul>
+<blockquote>
+<p>加锁机制既能确保可见性，又能确保原子性，而volatile变量只能确保可见性。</p>
+</blockquote>
+<p>当且仅当满足如下条件时，使用volatile变量</p>
+<ol>
+<li>对变量的写入不依赖变量的当前值，或者能确保只有一个线程更新变量值</li>
+<li>该变量不会与其他状态变量一起纳入不变性条件中。</li>
+<li>在访问变量时不需要加锁。</li>
+</ol>
+<h3 id="二、发布与逸出"><a href="#二、发布与逸出" class="headerlink" title="二、发布与逸出"></a>二、发布与逸出</h3><p>发布：对象能够在当前作用域之外的代码中访问。</p>
+<ul>
+<li>将对象的引用保存在其他代码可以访问的地方。</li>
+<li>在某个非私有的方法中返回该引用。</li>
+<li>将引用传递到其他类的方法中。</li>
+<li>发布一个内部类实例，该实例包含了对外部类实例的隐含引用。（即Outer.this引用）</li>
+</ul>
+<p>逸出：在对象尚未构造完成之前就发布该对象，就会破坏线程安全性。</p>
+<h4 id="2-1-this引用逸出"><a href="#2-1-this引用逸出" class="headerlink" title="2.1 this引用逸出"></a>2.1 this引用逸出</h4><pre><code class="hljs arduino"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ThisEscape</span> &#123;</span>
+ 
+      <span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> id;
+      <span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">String</span> name;
+      <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">ThisEscape</span><span class="hljs-params">(EventSource&lt;EventListener&gt; source)</span> </span>&#123;
+            id = <span class="hljs-number">1</span>;
+            <span class="hljs-comment">// 创建EventListener的匿名内部类</span>
+            <span class="hljs-comment">// 传递到source中，从而将匿名内部类对象发布出去</span>
+            source.registerListener(<span class="hljs-keyword">new</span> EventListener() &#123;
+                  <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> onEvent(Object obj) &#123;
+                        System.out.<span class="hljs-built_in">println</span>(<span class="hljs-string">"id: "</span>+ThisEscape.<span class="hljs-keyword">this</span>.id);
+                        System.out.<span class="hljs-built_in">println</span>(<span class="hljs-string">"name: "</span>+ThisEscape.<span class="hljs-keyword">this</span>.name);
+                  &#125;
+            &#125;);
+            <span class="hljs-comment">// 上一步发布的匿名内部类对象已经发布出去了，它包含了对其外部类ThisEscape.this的隐含引用</span>
+            <span class="hljs-comment">// 而此时ThisEscape实例由于sleep尚未构造完成，假设外部通过ThisEscape.this来访问该实例就会出现问题</span>
+            <span class="hljs-comment">// 不sleep的话，访问name可能是fly，sleep后大概率会出现null。</span>
+            <span class="hljs-keyword">try</span> &#123;
+                  Thread.sleep(<span class="hljs-number">1000</span>); <span class="hljs-comment">// 调用sleep模拟其他耗时的初始化操作</span>
+            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                  <span class="hljs-comment">// TODO Auto-generated catch block</span>
+                  e.printStackTrace();
+            &#125;
+            name = <span class="hljs-string">"fly"</span>;
+            
+      &#125;
+&#125;</code></pre>
+
+<h4 id="2-2-this引用逸出是怎样产生的"><a href="#2-2-this引用逸出是怎样产生的" class="headerlink" title="2.2 this引用逸出是怎样产生的"></a>2.2 this引用逸出是怎样产生的</h4><p>它需要满足两个条件：</p>
+<ol>
+<li><p>在构造函数中创建内部类(EventListener)，</p>
+</li>
+<li><p>在构造函数中就把这个内部类给发布了出去(source.registerListener)。</p>
+</li>
+</ol>
+<h4 id="2-3-如何防止this引用逸出"><a href="#2-3-如何防止this引用逸出" class="headerlink" title="2.3 如何防止this引用逸出"></a>2.3 如何防止this引用逸出</h4><p>避免让这两个条件同时出现。也就是说，如果要在构造函数中创建内部类，那么就不能在构造函数中把他发布了，应该在构造函数外发布，<strong>即确保构造函数执行完毕，初始化工作已全部完成，再发布内部类。</strong></p>
+<ul>
+<li>如下所示，使用一个私有的构造函数进行初始化和一个公共的工厂方法进行发布</li>
+</ul>
+<pre><code class="hljs arduino"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ThisSafe</span> &#123;</span>
+ 
+      <span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> id;
+      <span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">String</span> name;
+      <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> EventListener listener;
+      
+      <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">ThisSafe</span><span class="hljs-params">()</span> </span>&#123;
+            id = <span class="hljs-number">1</span>;
+            <span class="hljs-comment">// 在构造中创建匿名内部类对象</span>
+            listener = <span class="hljs-keyword">new</span> EventListener()&#123;
+                  <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> onEvent(Object obj) &#123;
+                        System.out.<span class="hljs-built_in">println</span>(<span class="hljs-string">"id: "</span>+ThisSafe.<span class="hljs-keyword">this</span>.id);
+                        System.out.<span class="hljs-built_in">println</span>(<span class="hljs-string">"name: "</span>+ThisSafe.<span class="hljs-keyword">this</span>.name);
+                  &#125;
+            &#125;;
+            name = <span class="hljs-string">"flysqrlboy"</span>;
+      &#125;
+      <span class="hljs-comment">// 在其他公有方法中发布EventListener对象</span>
+      <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> ThisSafe <span class="hljs-title">getInstance</span><span class="hljs-params">(EventSource&lt;EventListener&gt; source)</span> </span>&#123;
+            ThisSafe safe = <span class="hljs-keyword">new</span> ThisSafe();
+            source.registerListener(safe.listener);
+            <span class="hljs-keyword">return</span> safe;
+      &#125;
+&#125;</code></pre>
+
+<h4 id="2-4-其他"><a href="#2-4-其他" class="headerlink" title="2.4 其他"></a>2.4 其他</h4><p>另一种导致this引用逸出的常见错误，<strong>是在构造函数中启动一个线程</strong>。其原理跟上文说的内部类导致的this引用逸出相类似。解决的办法也相似，即<strong>可以在构造函数中创建线程，但别启动它。在构造函数外面再启动。</strong></p>
+<h3 id="三、线程封闭"><a href="#三、线程封闭" class="headerlink" title="三、线程封闭"></a>三、线程封闭</h3><h4 id="3-1-栈封闭"><a href="#3-1-栈封闭" class="headerlink" title="3.1 栈封闭"></a>3.1 栈封闭</h4><p>在栈封闭中，只有通过局部变量才能访问对象。</p>
+<h4 id="3-2-threadLocal"><a href="#3-2-threadLocal" class="headerlink" title="3.2 threadLocal"></a>3.2 threadLocal</h4><p>线程变量，仅对当前线程可见。</p>
+
+            </article>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/blog/categories/java/">java</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/blog/tags/thread/">thread</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" target="_blank" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！</p>
+              
+              
+                <div class="post-prevnext row">
+                  <div class="post-prev col-6">
+                    
+                    
+                      <a href="/blog/2020/08/12/%E7%BA%BF%E7%A8%8B%E4%B9%8B%E4%BB%BB%E5%8A%A1%E6%89%A7%E8%A1%8C/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">线程之多少个线程合适</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </div>
+                  <div class="post-next col-6">
+                    
+                    
+                      <a href="/blog/2020/06/29/hystrix%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/">
+                        <span class="hidden-mobile">hystrix源码分析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </div>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <div class="comments" id="comments">
+                
+                
+  <div class="disqus" style="width:100%">
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_config = function () {
+        this.page.url = 'http://yoursite.com/2020/07/29/多线程基础/';
+        this.page.identifier = '/2020/07/29/多线程基础/';
+      };
+      var oldLoadDq = window.onload;
+      window.onload = function () {
+        oldLoadDq && oldLoadDq();
+
+        var d = document, s = d.createElement('script');
+        s.type = 'text/javascript';
+        s.src = '//' + 'orange' + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+      };
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" target="_blank" rel="nofollow noopener noopener">comments
+        powered by Disqus.</a></noscript>
+  </div>
+
+
+              </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div id="tocbot"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+  </main>
+
+  
+    <a id="scroll-top-button" href="#" role="button">
+      <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+    </a>
+  
+
+  
+    <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+
+  
+
+  
+
+  <footer class="mt-5">
+  <div class="text-center py-3">
+    <div>
+      <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a>
+      <i class="iconfont icon-love"></i>
+      <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener">
+        <span>Fluid</span></a>
+    </div>
+    
+
+    
+
+    
+  </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script  src="https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js" ></script>
+<script  src="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/js/bootstrap.min.js" ></script>
+<script  src="/blog/js/debouncer.js" ></script>
+<script  src="/blog/js/main.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/blog/js/lazyload.js" ></script>
+  
+
+
+
+  <script defer src="https://cdn.staticfile.org/clipboard.js/2.0.6/clipboard.min.js" ></script>
+  <script  src="/blog/js/clipboard-use.js" ></script>
+
+
+
+
+
+
+
+  <script  src="https://cdn.staticfile.org/tocbot/4.11.1/tocbot.min.js" ></script>
+  <script>
+    $(document).ready(function () {
+      var boardCtn = $('#board-ctn');
+      var boardTop = boardCtn.offset().top;
+
+      tocbot.init({
+        tocSelector: '#tocbot',
+        contentSelector: 'article.markdown-body',
+        headingSelector: 'h1,h2,h3,h4,h5,h6',
+        linkClass: 'tocbot-link',
+        activeLinkClass: 'tocbot-active-link',
+        listClass: 'tocbot-list',
+        isCollapsedClass: 'tocbot-is-collapsed',
+        collapsibleClass: 'tocbot-is-collapsible',
+        collapseDepth: 0,
+        scrollSmooth: true,
+        headingsOffset: -boardTop
+      });
+      if ($('.toc-list-item').length > 0) {
+        $('#toc').css('visibility', 'visible');
+      }
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/typed.js/2.0.11/typed.min.js" ></script>
+  <script>
+    var typed = new Typed('#subtitle', {
+      strings: [
+        '  ',
+        "多线程基础&nbsp;",
+      ],
+      cursorChar: "_",
+      typeSpeed: 70,
+      loop: false,
+    });
+    typed.stop();
+    $(document).ready(function () {
+      $(".typed-cursor").addClass("h2");
+      typed.start();
+    });
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/anchor-js/4.2.2/anchor.min.js" ></script>
+  <script>
+    anchors.options = {
+      placement: "right",
+      visible: "hover",
+      
+    };
+    var el = "h1,h2,h3,h4,h5,h6".split(",");
+    var res = [];
+    for (item of el) {
+      res.push(".markdown-body > " + item)
+    }
+    anchors.add(res.join(", "))
+  </script>
+
+
+
+  <script  src="/blog/js/local-search.js" ></script>
+  <script>
+    var path = "/blog/local-search.xml";
+    var inputArea = document.querySelector("#local-search-input");
+    inputArea.onclick = function () {
+      searchFunc(path, 'local-search-input', 'local-search-result');
+      this.onclick = null
+    }
+  </script>
+
+
+
+  <script  src="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.staticfile.org/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+  <script>
+    $('#post img:not(.no-zoom img, img[no-zoom]), img[zoom]').each(
+      function () {
+        var element = document.createElement('a');
+        $(element).attr('data-fancybox', 'images');
+        $(element).attr('href', $(this).attr('src'));
+        $(this).wrap(element);
+      }
+    );
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
